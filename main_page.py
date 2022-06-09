@@ -1,14 +1,15 @@
-import re
+
 import streamlit as st
 from sympy.physics.continuum_mechanics import Beam
 import sympy
-
+from sympy import SingularityFunction
+from sympy.plotting import plot
 import pandas as pd
+import numpy as np
 
 st.write("""
-# Simple Iris Flower Prediction App
+# Simple Beam Analysis
 
-This app predicts the **Iris flower** type!
 """)
 
 st.sidebar.header('User Input Parameters')
@@ -76,67 +77,69 @@ def sympy_variable(x:str):
 
 def apply_end_support_loads(beam_inst, L):
     sympy_symbols = []
+    beam_inst.bc_deflection = []
+    beam_inst.bc_slope = []
     if lt_sprt == "Fix":
         R_0 = sympy_variable("R_0")
         M_0 = sympy_variable("M_0")
         sympy_symbols.append(R_0)
         sympy_symbols.append(M_0)
-        beam_inst.apply_support(0, "fixed")
+        beam_inst.apply_load(R_0, 0, -1)
+        beam_inst.apply_load(M_0, 0, -2)
+        beam_inst.bc_deflection.append((0,0))
+        beam_inst.bc_slope.append((0,0))
     else:
         R_0 = sympy_variable("R_0")
         sympy_symbols.append(R_0)
-        beam_inst.apply_support(0, "pin")
+        beam_inst.apply_load(R_0, 0, -1)
+        beam_inst.bc_deflection.append((0,0))
 
     if rt_sprt == "Fix":
         r_end = sympy_variable("R_" + str(L))
         m_end = sympy_variable("M_" + str(L))
         sympy_symbols.append(r_end)
         sympy_symbols.append(m_end)
-        beam_inst.apply_support(L, "fixed")
+        beam_inst.apply_load(r_end, L, -1)
+        beam_inst.apply_load(m_end, L, -2)
+        beam_inst.bc_deflection.append((L,0))
+        beam_inst.bc_slope.append((L,0))
     else:
         r_end = sympy_variable("R_" + str(L))
         sympy_symbols.append(r_end)
-        beam_inst.apply_support(L, "pin")
+        beam_inst.apply_load(r_end, L, -1)
+        beam_inst.bc_deflection.append((L,0))
     
     return sympy_symbols
 
 reaction_symbols = apply_end_support_loads(beam_inst ,L)
 
 
-if lt_sprt == "Fix":
-        R_0 = sympy_variable("R_0")
-        M_0 = sympy_variable("M_0")
-        
-        
-else:
-    R_0 = sympy_variable("R_0")
-    
-    
-
-if rt_sprt == "Fix":
-    r_end = sympy_variable("R_" + str(L))
-    m_end = sympy_variable("M_" + str(L))
-    
-    
-else:
-    r_end = sympy_variable("R_" + str(L))
-    
-    
-
 beam_inst.apply_load(point_data[0], point_data[1], -1)
 beam_inst.apply_load(moment_data[0], moment_data[1], -2)
 beam_inst.apply_load(UDL_data[0], UDL_data[1], 0, end=UDL_data[2])
 
-print(beam_inst.load)
+#beam_inst.load
 draw_pen = beam_inst.draw(pictorial=True)
 #draw_pen.save("default.png")
 
-print(reaction_symbols[0] == sympy_variable("R_0"))
+#print(reaction_symbols[0] == sympy_variable("R_0"))
 
 
 if len(reaction_symbols) == 4:
-    beam_inst.solve_for_reaction_loads(M_0, m_end ,R_0, r_end)
+    beam_inst.solve_for_reaction_loads(reaction_symbols[0], reaction_symbols[1] ,reaction_symbols[2], reaction_symbols[3])
+elif len(reaction_symbols) == 3:
+    beam_inst.solve_for_reaction_loads(reaction_symbols[0], reaction_symbols[1] ,reaction_symbols[2])
+else:
+    beam_inst.solve_for_reaction_loads(reaction_symbols[0], reaction_symbols[1])
 
 
+beam_inst.load
 
+print("\n")
 
+bending_moment_eq = beam_inst.bending_moment()
+
+ax_x = np.arange(0, L+0.05, 0.05)
+moment_y = []
+for x in ax_x:
+    moment_y.append(bending_moment_eq())
