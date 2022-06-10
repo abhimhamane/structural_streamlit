@@ -139,6 +139,7 @@ def apply_point_load(beam_inst, magnitude: float, load_loc: float):
             }
 
     _load_def = pd.DataFrame(_data, index=[0])
+    #print(_load_def)
 
     return _load_def
 
@@ -150,6 +151,7 @@ def apply_moment_load(beam_inst, magnitude: float, load_loc: float):
             }
 
     _load_def = pd.DataFrame(_data, index=[0])
+    #print(_load_def)
 
     return _load_def
 
@@ -161,6 +163,7 @@ def apply_udl(beam_inst, magnitude: float, start_loc: float, end_loc: float):
             'end_loc': end_loc    
             }
     _load_def = pd.DataFrame(_data, index=[0])
+    #print(_load_def)
 
     return _load_def
 
@@ -235,6 +238,9 @@ def matplotlib_plot_with_presets(beam_inst, eqn: list, plt_title: str, y_label: 
     plt.title(plt_title)
     plt.legend(title=plt_title, title_fontsize = 13)
     plt.show()
+
+
+
 
 
 
