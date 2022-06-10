@@ -1,4 +1,4 @@
-from sympy.physics.continium_mechanics import Beam
+from sympy.physics.continuum_mechanics import Beam
 from sympy import symbols
 from sympy import SingularityFunction
 
@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 
-def bean_instantiate(L: float, E: float, I: float):
+def beam_instantiate(L: float, E: float, I: float):
     """
     Returns sympy Beam instance with input parameters like 
     L: Length (meters)
@@ -30,7 +30,7 @@ def simply_supported_beam(L: float, E: float, I: float):
     E: Young's Modulus (MPa)
     I: Second Moment of Inertia (m^4)
     """
-    simply_suported = bean_instantiate(L, E, I)
+    simply_suported = beam_instantiate(L, E, I)
 
     # create R_0 sympy symbol 
     rxn_symb = []
@@ -43,6 +43,8 @@ def simply_supported_beam(L: float, E: float, I: float):
     # Apply reaction Point load 
     simply_suported.apply_load(R_0, 0, -1) 
     simply_suported.apply_load(r_end, L, -1) 
+
+    #print(simply_suported.applied_loads)
     
     # Apply deflections and slope constraints
     simply_suported.bc_deflection.append((0,0))
@@ -57,7 +59,7 @@ def fixed_beam(L: float, E: float, I: float):
     E: Young's Modulus (MPa)
     I: Second Moment of Inertia (m^4)
     """
-    fix_beam = bean_instantiate(L, E, I)
+    fix_beam = beam_instantiate(L, E, I)
 
     # create sympy symbol for Reaction Load
     rxn_symb = []
@@ -76,8 +78,8 @@ def fixed_beam(L: float, E: float, I: float):
     fix_beam.apply_load(R_0, 0, -1)
     fix_beam.apply_load(M_0, 0, -2)
 
-    fix_beam.apply_load(r_end, 0, -1)
-    fix_beam.apply_load(m_end, 0, -2)
+    fix_beam.apply_load(r_end, fix_beam.length, -1)
+    fix_beam.apply_load(m_end, fix_beam.length, -2)
 
     # Apply deflections and slope constraints
     fix_beam.bc_slope.append((0,0))
@@ -95,7 +97,7 @@ def proped_cantilever_beam(L: float, E: float, I: float):
     E: Young's Modulus (MPa)
     I: Second Moment of Inertia (m^4)
     """
-    proped_cantilever = bean_instantiate(L, E, I)
+    proped_cantilever = beam_instantiate(L, E, I)
 
     # create sympy symbol for Reaction Load
     rxn_symb = []
@@ -112,15 +114,21 @@ def proped_cantilever_beam(L: float, E: float, I: float):
     proped_cantilever.apply_load(R_0, 0, -1)
     proped_cantilever.apply_load(M_0, 0, -2)
 
-    proped_cantilever.apply_load(r_end, 0, -1)
+    proped_cantilever.apply_load(r_end, proped_cantilever.length, -1)
 
     # Apply deflections and slope constraints
     proped_cantilever.bc_slope.append((0,0))
 
     proped_cantilever.bc_deflection.append((0,0))
-    proped_cantilever.bc_deflection.append((L,0))
+    proped_cantilever.bc_deflection.append((proped_cantilever.length,0))
 
     return proped_cantilever, rxn_symb
+
+
+def cantilever_beam(L: float, E: float, I: float):
+
+    raise NotImplementedError
+
 
 
 def apply_point_load(beam_inst, magnitude: float, load_loc: float):
