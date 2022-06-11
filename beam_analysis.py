@@ -242,9 +242,3 @@ def matplotlib_plot_with_presets(beam_inst, eqn: list, plt_title: str, y_label: 
 
 
 
-
-
-
-
-
-

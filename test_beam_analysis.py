@@ -214,32 +214,3 @@ def testing_ss_beam(L, E, I):
     ####### All test passed
 
 #testing_ss_beam(_L, _E, _I)
-
-def testing_fixed_beam(L, E, I):
-    """
-    Testing Fixed beam 
-
-        1. for supoort reactions with
-        2. shear force eqn
-        3. Bending Moment eqn
-        4. Slope and Deflection equation (Not Yet Implemented)
-    """
-    mag = 10.0
-    load_loc = 5.0
-    start_loc = 0.0
-    end_loc = 10.0
-
-    fix_beam, rxn_symb = fixed_beam(_L, _E, _I)
-
-    ###Case 1: Point load at center
-    apply_point_load(fix_beam, mag, load_loc)
-
-    rxn_loads = solve_for_rxns(fix_beam, rxn_symb)
-
-    R_0, R_10, M_0, M_10 = symbols("R_0 R_10.0 M_0 M_10.0")
-    #print(rxn_loads)
-    _expected_rxns = [(R_0, -(fix_beam.applied_loads[4][0])/2.0), (M_0, (mag*fix_beam.length)/8.0) ,(R_10, -(fix_beam.applied_loads[4][0])/2.0), (M_10, -(mag*fix_beam.length)/8.0)]
-
-    print(type(rxn_loads[0][1]) == type(_expected_rxns[0][1]))
-
-testing_fixed_beam(_L, _E, _I)
