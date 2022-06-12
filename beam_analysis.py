@@ -23,6 +23,17 @@ def create_sympy_symbol(variable: str):
     """
     return symbols(variable)
 
+
+def beam_calling(beam_type_inp, ):
+    pass
+
+
+
+
+
+
+
+
 def simply_supported_beam(L: float, E: float, I: float):
     """
     Returns a simply( supported beam instance with bundary condition and Reaction load initialized.
