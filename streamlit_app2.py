@@ -13,7 +13,7 @@ analysis_params_form = st.sidebar.form("analysis_params_form")
 analysis_params_form.subheader("Beam Properties")
 beam_length = analysis_params_form.slider("Length (m)", 2.0, 25.0, 10.0, step=0.5)
 beam_E = analysis_params_form.slider("Elastic Modulus in MPa:", 15000.0, 35000.0, 25000.0, step=5000.0)
-
+beam_I = 0.004
 
 #analysis_params_form.write("Second Moment of Inertia:  "+str(st.session_state.beam_I) + "m^4")
 
@@ -38,7 +38,13 @@ if analysis_type == "Simple Analysis":
         simple_container.session_state.beam_type = beam_type
 
     # instanciate the beam
-    # then for each loading form call apply load func
+    if beam_type == "Simply Supported Beam":
+        simple_beam, reacn_symbs = simply_supported_beam(beam_length, beam_E, beam_I)
+    elif beam_type =="Fixed Beam":
+        simple_beam ,reacn_symbs = fixed_beam(beam_length, beam_E, beam_I)
+    elif beam_type =="Proped Cantilever Beam":
+        simple_beam, reacn_symbs = proped_cantilever_beam(beam_length, beam_E, beam_I)
+    
 
 
     ################################# Simple Analysis ############
@@ -63,10 +69,14 @@ if analysis_type == "Simple Analysis":
     udl_load_inp_form = load_col.form("simple_loadings_form_udl")
     udl_load = udl_load_inp_form.slider("UDL Magnitude (kN/m)", 0.0, 20.0, 10.0, step=1.0)
 
-    _lst = np.zeros((10, ))
-    udl_start_loc, udl_end_loc = udl_load_inp_form.select_slider("Select start and end location", options=['1', '2', '3'], value=('1', '2'))    
+    
+    _lst = []
+    for i in range(0, int(beam_length+1)):
+        _lst.append(str(i))
+    udl_strt_loc, udl_end_loc = udl_load_inp_form.select_slider("label", options=_lst, value=(_lst[0], _lst[-1]))
+    ## start and end location is a string - later convert it to float in order to use
+    
     udl_load_inp_form.form_submit_button("Apply UDL")
-
 
     ##### Moment Load Form ########
     moment_load_inp_form = load_col.form("simple_loadings_form_moment")
@@ -77,20 +87,44 @@ if analysis_type == "Simple Analysis":
     ######################### Analysis COLUMN ##############
     simple_analysis_col.subheader("Analysis Results")
 
+        # then for each loading form call apply load func
 
+    _pt_load = apply_point_load(simple_beam, point_load, point_load_loc)
+    _moment_load = apply_moment_load(simple_beam, moment_load, moment_load_loc)
+    _udl_load = apply_udl(simple_beam, udl_load, float(udl_strt_loc), float(udl_end_loc))
+
+    simple_analysis_col.write(simple_beam.applied_loads)
+
+######################### What-If Analysis ###################################
 elif analysis_type == "What-If Analysis":
     what_if_container = st.container()
     what_if_container.header("What-If Analysis")
 
     what_if_analysis_type = what_if_container.radio(label = 'Which aspect you want to Analyse?', options = ['Support Effect', 'Loading Effect'])
 
-    if 'support_effect' not in st.session_state:
-        st.session_state.support_effect = what_if_analysis_type
-
+    if 'what_if_analysis_type' not in st.session_state:
+        st.session_state.what_if_analysis_type = what_if_analysis_type
 
     referene_column, interactive_column = what_if_container.columns(2)
 
-    ################ Support Effect #########
+    if what_if_analysis_type == "Support Effect":
+        ################ Support Effect #########
+
+
+        
+        simple_support_effect_column = referene_column.subheader("Support Effect")
+
+
+        support_interactive_column = interactive_column.subheader("Beam Analysis")
+
+
+    elif what_if_analysis_type == "Loading Effect":
+        ################ Support Effect #########
+        simple_loading_effect_column = referene_column.subheader("Loading Effect")
+
+        loading_interactive_column = interactive_column.subheader("Beam Analysis")
+
+
 
 
 

@@ -250,6 +250,7 @@ def matplotlib_plot_with_presets(beam_inst, eqn: list, plt_title: str, y_label: 
     plt.legend(title=plt_title, title_fontsize = 13)
     plt.show()
 
-
+def beam_viz(beam_inst, ):
+    pass
 
 
