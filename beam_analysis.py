@@ -278,6 +278,7 @@ def beam_viz(beam_inst, beam_type, rxn_symbs):
         _beam_inst_sprt.apply_support(0, "fixed")
 
     _beam_sprt_loads = _beam_inst_sprt.applied_loads
+    
     ## This is beam with reactions and loads
     print("#########")
     for _load in _loads:
@@ -288,11 +289,16 @@ def beam_viz(beam_inst, beam_type, rxn_symbs):
 
         print(_beam_inst_sprt.applied_loads)
         print(_load[0]== 0.0, _load[2])
-        print("\n")
+        
     
     _beam_sprt_pen = _beam_inst_sprt.draw()
     
     _beam_sprt_pen.save("temp_beam_viz.png")
+
+    from PIL import Image
+    image = Image.open('temp_beam_viz.png')
+
+    return(image)
     
     
     

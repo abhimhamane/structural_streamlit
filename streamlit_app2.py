@@ -95,7 +95,8 @@ if analysis_type == "Simple Analysis":
 
     #simple_analysis_col.write(simple_beam.applied_loads)
 
-    beam_viz(simple_beam, beam_type, reacn_symbs)
+    simple_analysis_col.image(beam_viz(simple_beam, beam_type, reacn_symbs), caption='Sunrise by the mountains')
+
 
 
 
