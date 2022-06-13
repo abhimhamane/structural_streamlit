@@ -100,7 +100,7 @@ if analysis_type == "Simple Analysis":
 
     #### Solving for reaction loads
     rxn_loads = solve_for_rxns(simple_beam ,reacn_symbs)
-    rxn_loads
+    
 
     simple_analysis_rxn_loads = simple_analysis_col.container()
 
@@ -108,16 +108,20 @@ if analysis_type == "Simple Analysis":
     simple_analysis_plots = simple_analysis_col.container()
     shear_eqn = simple_beam.shear_force()
     bm_eqn = simple_beam.bending_moment()
-
+    
+    "Shear Equation:"
     shear_eqn
+    " "
+    "Bending Moment Equation:"
+    bm_eqn
+
     fig, (shear_plot, bm_plot) = plt.subplots(2, 1)
     ax_x = np.arange(0, simple_beam.length, 0.01)
     x_lst = []
     for i in ax_x:
         x_lst.append(i)
 
-    print(ax_x.shape)
-    
+        
     shear_vals = []
     bm_vals = []
     x = create_sympy_symbol("x")
@@ -152,38 +156,6 @@ if analysis_type == "Simple Analysis":
     simple_analysis_plots.pyplot(fig)
     
     
-
-
-
-######################### What-If Analysis ###################################
-elif analysis_type == "What-If Analysis":
-    what_if_container = st.container()
-    what_if_container.header("What-If Analysis")
-
-    what_if_analysis_type = what_if_container.radio(label = 'Which aspect you want to Analyse?', options = ['Support Effect', 'Loading Effect'])
-
-    if 'what_if_analysis_type' not in st.session_state:
-        st.session_state.what_if_analysis_type = what_if_analysis_type
-
-    referene_column, interactive_column = what_if_container.columns(2)
-
-    if what_if_analysis_type == "Support Effect":
-        ################ Support Effect #########
-
-
-        
-        simple_support_effect_column = referene_column.subheader("Support Effect")
-
-
-        support_interactive_column = interactive_column.subheader("Beam Analysis")
-
-
-    elif what_if_analysis_type == "Loading Effect":
-        ################ Support Effect #########
-        simple_loading_effect_column = referene_column.subheader("Loading Effect")
-
-        loading_interactive_column = interactive_column.subheader("Beam Analysis")
-
 
 
 

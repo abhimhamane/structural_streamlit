@@ -267,6 +267,43 @@ def beam_viz(beam_inst, beam_type, rxn_symbs):
     
 
     return(_cropped_img)
+
+
+
+##########
+"""
+
+######################### What-If Analysis ###################################
+elif analysis_type == "What-If Analysis":
+    what_if_container = st.container()
+    what_if_container.header("What-If Analysis")
+
+    what_if_analysis_type = what_if_container.radio(label = 'Which aspect you want to Analyse?', options = ['Support Effect', 'Loading Effect'])
+
+    if 'what_if_analysis_type' not in st.session_state:
+        st.session_state.what_if_analysis_type = what_if_analysis_type
+
+    referene_column, interactive_column = what_if_container.columns(2)
+
+    if what_if_analysis_type == "Support Effect":
+        ################ Support Effect #########
+
+
+        
+        simple_support_effect_column = referene_column.subheader("Support Effect")
+
+
+        support_interactive_column = interactive_column.subheader("Beam Analysis")
+
+
+    elif what_if_analysis_type == "Loading Effect":
+        ################ Support Effect #########
+        simple_loading_effect_column = referene_column.subheader("Loading Effect")
+
+        loading_interactive_column = interactive_column.subheader("Beam Analysis")
+
+
+"""
     
     
     
