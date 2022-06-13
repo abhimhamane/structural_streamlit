@@ -106,26 +106,52 @@ if analysis_type == "Simple Analysis":
 
     #### Plotting SFD, BMD and Deflections charts
     simple_analysis_plots = simple_analysis_col.container()
-    shear_x, shear_y = shear_force_eqn(simple_beam)
-    bm_eqn_vals = bending_moment_eqn(simple_beam)
-    simple_analysis_plots.write("Plots")
-    ###Plotting 
-    """simple_analysis_plots.image(simple_beam.plot_shear_force())
-    _fig = plt.figure(figsize=(10,6), tight_layout=True)
-    #plotting
-    #plt.plot(shear_x, shear_y)
-    #customization
+    shear_eqn = simple_beam.shear_force()
+    bm_eqn = simple_beam.bending_moment()
+
+    shear_eqn
+    fig, (shear_plot, bm_plot) = plt.subplots(2, 1)
+    ax_x = np.arange(0, simple_beam.length, 0.01)
+    x_lst = []
+    for i in ax_x:
+        x_lst.append(i)
+
+    print(ax_x.shape)
     
-    plt.xlabel('x')
-    plt.ylabel("Shear Force (kN)")
-    plt.title("Shear Force Plot")
-    plt.legend(title="Shear Force Plot", title_fontsize = 13)
-
-    simple_analysis_plots.pyplot(_fig)"""
-
+    shear_vals = []
+    bm_vals = []
+    x = create_sympy_symbol("x")
+    for i in x_lst:
+        shear_vals.append(float(shear_eqn.subs(x, i)))
+        bm_vals.append(float(bm_eqn.subs(x, i)))
     
+    shear_plot.plot(x_lst, shear_vals)
+    
+    shear_plot.set_ylabel('V (kN)')
+    shear_plot.set_title("Shear Plot")
+    shear_plot.axhline(y=0, color='k')
+    shear_plot.axvline(x=0, color='k')
+    shear_plot.grid(True, which='both')
 
 
+
+
+    bm_plot.plot(x_lst, bm_vals)
+    bm_plot.set_xlabel('x')
+    bm_plot.set_ylabel('M (kN-m)')
+    bm_plot.set_title("Bending Moment Plot")
+    bm_plot.axhline(y=0, color='k')
+    bm_plot.axvline(x=0, color='k')
+    bm_plot.grid(True, which='both')
+
+    plt.subplots_adjust(bottom=0.1,  
+                    top=0.9, 
+                    wspace=0.4, 
+                    hspace=0.4)
+
+    simple_analysis_plots.pyplot(fig)
+    
+    
 
 
 

@@ -201,32 +201,6 @@ def solve_for_rxns(beam_inst, rxn_symb: list):
 
     return _rxn_loads
 
-def shear_force_eqn(beam_inst):
-    """
-    
-    """
-    _shear_eqn = beam_inst.shear_force()
-    _ax_x = np.arange(0, beam_inst.length+0.05, 0.05)
-    x = create_sympy_symbol("x")
-    _shear_y = []
-    for i in _ax_x:
-        _shear_y.append(_shear_eqn.subs(x, i))
-    
-    return _ax_x, _shear_y
-    
-def bending_moment_eqn(beam_inst):
-    """
-    
-    """
-    _bm_eqn = beam_inst.bending_moment()
-    print(_bm_eqn)
-    _ax_x = np.arange(0, beam_inst.length+0.05, 0.05)
-    x = create_sympy_symbol("x")
-    _bm_y = []
-    for i in _ax_x:
-        _bm_y.append(_bm_eqn.subs(x, i))
-    
-    return [_ax_x ,_bm_y]
 
 def slope_eqn(beam_inst):
     """
@@ -238,23 +212,6 @@ def deflection_eqn(beam_inst):
 
     raise NotImplementedError
 
-def matplotlib_plot_with_presets(beam_inst, eqn: list, plt_title: str, y_label: str, _container):
-    """
-    This function takes the [x, y] input list and plots the values
-    with certain presets of matplotlib to buitify the plot without
-    """
-    _fig = plt.figure(figsize=(10,6), tight_layout=True)
-    #plotting
-    plt.plot(eqn[0], eqn[1])
-    #customization
-    plt.xticks(np.arange(0, beam_inst.length+0.5, 1))
-    plt.xlabel('x')
-    plt.ylabel(y_label)
-    plt.title(plt_title)
-    plt.legend(title=plt_title, title_fontsize = 13)
-
-    _container.pyplot(_fig)
-    
 
 def beam_viz(beam_inst, beam_type, rxn_symbs):
     _beam_inst_sprt = Beam(beam_inst.length, beam_inst.elastic_modulus, beam_inst.second_moment)
