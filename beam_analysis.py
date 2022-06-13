@@ -1,5 +1,6 @@
 from sympy.physics.continuum_mechanics import Beam
 from sympy import symbols
+import sympy
 from sympy import SingularityFunction
 
 import matplotlib.pyplot as plt
@@ -250,7 +251,48 @@ def matplotlib_plot_with_presets(beam_inst, eqn: list, plt_title: str, y_label: 
     plt.legend(title=plt_title, title_fontsize = 13)
     plt.show()
 
-def beam_viz(beam_inst, ):
-    pass
+def beam_viz(beam_inst, beam_type, rxn_symbs):
+    _beam_inst_sprt = Beam(beam_inst.length, beam_inst.elastic_modulus, beam_inst.second_moment)
 
+    #print(_beam_inst)
+    _loads = beam_inst.applied_loads
+    #print(_loads)
+    
+    """for _load in _loads:
+        if _load in rxn_symbs :
+            print((_load[0]))
+            _beam_inst.remove_load(_load[0], _load[1], _load[2], _load[3])
+        if _load[0] == 0.0:
+            _beam_inst.remove_load(_load[0], _load[1], _load[2], _load[3])"""
+    # This is beam Vizulization
+    if beam_type == "Simply Supported Beam":
+        _beam_inst_sprt.apply_support(0, "pin")
+        _beam_inst_sprt.apply_support(beam_inst.length ,"roller")
+    elif beam_type == "Fixed Beam":
+        _beam_inst_sprt.apply_support(0, "fixed")
+        _beam_inst_sprt.apply_support(beam_inst.length, "fixed")
+    elif beam_type == "Proped Cantilever Beam":
+        _beam_inst_sprt.apply_support(0, "fixed")
+        _beam_inst_sprt.apply_support(beam_inst.length, "roller")
+    elif beam_type == "Cantilever Beam":
+        _beam_inst_sprt.apply_support(0, "fixed")
 
+    _beam_sprt_loads = _beam_inst_sprt.applied_loads
+    ## This is beam with reactions and loads
+    print("#########")
+    for _load in _loads:
+        if _load[0] != 0.0:
+            _beam_inst_sprt.apply_load(_load[0], _load[1], _load[2], _load[3])
+        if type(_load[0]) == sympy.core.symbol.Symbol:
+            _beam_inst_sprt.remove_load(_load[0], _load[1], _load[2], _load[3])
+
+        print(_beam_inst_sprt.applied_loads)
+        print(_load[0]== 0.0, _load[2])
+        print("\n")
+    
+    _beam_sprt_pen = _beam_inst_sprt.draw()
+    
+    _beam_sprt_pen.save("temp_beam_viz.png")
+    
+    
+    

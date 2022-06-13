@@ -93,7 +93,11 @@ if analysis_type == "Simple Analysis":
     _moment_load = apply_moment_load(simple_beam, moment_load, moment_load_loc)
     _udl_load = apply_udl(simple_beam, udl_load, float(udl_strt_loc), float(udl_end_loc))
 
-    simple_analysis_col.write(simple_beam.applied_loads)
+    #simple_analysis_col.write(simple_beam.applied_loads)
+
+    beam_viz(simple_beam, beam_type, reacn_symbs)
+
+
 
 ######################### What-If Analysis ###################################
 elif analysis_type == "What-If Analysis":
