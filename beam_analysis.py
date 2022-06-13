@@ -7,6 +7,8 @@ import matplotlib.pyplot as plt
 
 import pandas as pd
 import numpy as np
+from PIL import Image
+
 
 def beam_instantiate(L: float, E: float, I: float):
     """
@@ -204,26 +206,27 @@ def shear_force_eqn(beam_inst):
     
     """
     _shear_eqn = beam_inst.shear_force()
-    ax_x = np.arange(0, beam_inst.length+0.05, 0.05)
+    _ax_x = np.arange(0, beam_inst.length+0.05, 0.05)
     x = create_sympy_symbol("x")
-    shear_y = []
-    for i in ax_x:
-        shear_y.append(_shear_eqn.subs(x, i))
+    _shear_y = []
+    for i in _ax_x:
+        _shear_y.append(_shear_eqn.subs(x, i))
     
-    return [ax_x, shear_y]
+    return _ax_x, _shear_y
     
 def bending_moment_eqn(beam_inst):
     """
     
     """
     _bm_eqn = beam_inst.bending_moment()
-    ax_x = np.arange(0, beam_inst.length+0.05, 0.05)
+    print(_bm_eqn)
+    _ax_x = np.arange(0, beam_inst.length+0.05, 0.05)
     x = create_sympy_symbol("x")
-    bm_y = []
-    for i in ax_x:
-        bm_y.append(_bm_eqn.subs(x, i))
+    _bm_y = []
+    for i in _ax_x:
+        _bm_y.append(_bm_eqn.subs(x, i))
     
-    return [ax_x ,bm_y]
+    return [_ax_x ,_bm_y]
 
 def slope_eqn(beam_inst):
     """
@@ -235,12 +238,12 @@ def deflection_eqn(beam_inst):
 
     raise NotImplementedError
 
-def matplotlib_plot_with_presets(beam_inst, eqn: list, plt_title: str, y_label: str):
+def matplotlib_plot_with_presets(beam_inst, eqn: list, plt_title: str, y_label: str, _container):
     """
     This function takes the [x, y] input list and plots the values
     with certain presets of matplotlib to buitify the plot without
     """
-    plt.figure(figsize=(10,6), tight_layout=True)
+    _fig = plt.figure(figsize=(10,6), tight_layout=True)
     #plotting
     plt.plot(eqn[0], eqn[1])
     #customization
@@ -249,7 +252,9 @@ def matplotlib_plot_with_presets(beam_inst, eqn: list, plt_title: str, y_label: 
     plt.ylabel(y_label)
     plt.title(plt_title)
     plt.legend(title=plt_title, title_fontsize = 13)
-    plt.show()
+
+    _container.pyplot(_fig)
+    
 
 def beam_viz(beam_inst, beam_type, rxn_symbs):
     _beam_inst_sprt = Beam(beam_inst.length, beam_inst.elastic_modulus, beam_inst.second_moment)
@@ -280,25 +285,31 @@ def beam_viz(beam_inst, beam_type, rxn_symbs):
     _beam_sprt_loads = _beam_inst_sprt.applied_loads
     
     ## This is beam with reactions and loads
-    print("#########")
+    
     for _load in _loads:
         if _load[0] != 0.0:
             _beam_inst_sprt.apply_load(_load[0], _load[1], _load[2], _load[3])
         if type(_load[0]) == sympy.core.symbol.Symbol:
             _beam_inst_sprt.remove_load(_load[0], _load[1], _load[2], _load[3])
-
-        print(_beam_inst_sprt.applied_loads)
-        print(_load[0]== 0.0, _load[2])
-        
+       
     
-    _beam_sprt_pen = _beam_inst_sprt.draw()
+    _beam_sprt_pen = _beam_inst_sprt.draw(pictorial=True)
     
     _beam_sprt_pen.save("temp_beam_viz.png")
 
-    from PIL import Image
-    image = Image.open('temp_beam_viz.png')
+    
+    _image = Image.open('temp_beam_viz.png')
+    _img_width, _img_height = _image.size
+    
+    ## Cropping the image
+    x, y = 70, 150
+    # Select area to crop
+    area = (x, y, x+520, y+175)
+    # Crop, show, and save image
+    _cropped_img = _image.crop(area)
+    
 
-    return(image)
+    return(_cropped_img)
     
     
     

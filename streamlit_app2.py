@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 
 from beam_analysis import *
 
@@ -93,9 +94,37 @@ if analysis_type == "Simple Analysis":
     _moment_load = apply_moment_load(simple_beam, moment_load, moment_load_loc)
     _udl_load = apply_udl(simple_beam, udl_load, float(udl_strt_loc), float(udl_end_loc))
 
-    #simple_analysis_col.write(simple_beam.applied_loads)
+    ##### beam Visualisation
+    simple_analysis_beam_viz = simple_analysis_col.container()
+    simple_analysis_beam_viz.image(beam_viz(simple_beam, beam_type, reacn_symbs))
 
-    simple_analysis_col.image(beam_viz(simple_beam, beam_type, reacn_symbs), caption='Sunrise by the mountains')
+    #### Solving for reaction loads
+    rxn_loads = solve_for_rxns(simple_beam ,reacn_symbs)
+    rxn_loads
+
+    simple_analysis_rxn_loads = simple_analysis_col.container()
+
+    #### Plotting SFD, BMD and Deflections charts
+    simple_analysis_plots = simple_analysis_col.container()
+    shear_x, shear_y = shear_force_eqn(simple_beam)
+    bm_eqn_vals = bending_moment_eqn(simple_beam)
+    simple_analysis_plots.write("Plots")
+    ###Plotting 
+    """simple_analysis_plots.image(simple_beam.plot_shear_force())
+    _fig = plt.figure(figsize=(10,6), tight_layout=True)
+    #plotting
+    #plt.plot(shear_x, shear_y)
+    #customization
+    
+    plt.xlabel('x')
+    plt.ylabel("Shear Force (kN)")
+    plt.title("Shear Force Plot")
+    plt.legend(title="Shear Force Plot", title_fontsize = 13)
+
+    simple_analysis_plots.pyplot(_fig)"""
+
+    
+
 
 
 
