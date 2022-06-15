@@ -35,7 +35,7 @@ if analysis_type == "Simple Analysis":
 
     ####### Select Type of Beam
     
-    beam_type = simple_container.radio(label = 'Type of Beams', options = ['Simply Supported Beam', 'Fixed Beam', 'Proped Cantilever Beam'], horizontal=True)
+    beam_type = simple_container.radio(label = 'Type of Beams', options = ['Simply Supported Beam', 'Fixed Beam', 'Proped Cantilever Beam', 'Cantilever Beam'], horizontal=True)
 
     if 'beam_type' not in st.session_state:
         simple_container.session_state.beam_type = beam_type
@@ -47,6 +47,8 @@ if analysis_type == "Simple Analysis":
         simple_beam ,reacn_symbs = fixed_beam(beam_length, beam_E, beam_I)
     elif beam_type =="Proped Cantilever Beam":
         simple_beam, reacn_symbs = proped_cantilever_beam(beam_length, beam_E, beam_I)
+    elif beam_type =="Cantilever Beam":
+        simple_beam, reacn_symbs = cantilever_beam(beam_length, beam_E, beam_I)
     
 
 
