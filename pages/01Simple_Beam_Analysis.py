@@ -14,6 +14,7 @@ analysis_params_form = st.sidebar.form("analysis_params_form")
 analysis_params_form.subheader("Beam Properties")
 beam_length = analysis_params_form.slider("Length (m)", 2.0, 25.0, 10.0, step=0.5)
 beam_E = analysis_params_form.slider("Elastic Modulus in MPa:", 15000.0, 35000.0, 25000.0, step=5000.0)
+BM_preference = analysis_params_form.radio("Choose your BM Drawing convention:", options=['Compression Side' ,'Tension Side'])
 beam_I = 0.0005175 # m^4
 
 #analysis_params_form.write("Second Moment of Inertia:  "+str(st.session_state.beam_I) + "m^4")
@@ -54,7 +55,7 @@ if analysis_type == "Simple Analysis":
     ##step1. Taking Input for type of beam
     ##step2. Taking Input for Loadings on Beam
     ##        Type of beam will be session state variable
-    load_col, simple_analysis_col = simple_container.columns(2)
+    load_col, simple_analysis_col = simple_container.columns([1, 2])
 
 
     ########################## LOADING COLUMN ##############
@@ -104,7 +105,7 @@ if analysis_type == "Simple Analysis":
     
 
     simple_analysis_rxn_loads = simple_analysis_col.container()
-    simple_analysis_rxn_loads.write(rxn_loads)
+    #simple_analysis_rxn_loads.write(rxn_loads)
 
     #### Plotting SFD, BMD and Deflections charts
     simple_analysis_plots = simple_analysis_col.container()
@@ -163,7 +164,9 @@ if analysis_type == "Simple Analysis":
 
     bm_plot.plot(x_lst, bm_vals, 'g')
     #bm_plot.set_xlabel('x')
-    bm_plot.invert_yaxis()
+    if BM_preference == "Tension Side":
+        bm_plot.invert_yaxis()
+    
     bm_plot.set_ylabel('M (kN-m)')
     bm_plot.set_title("Bending Moment Plot")
     bm_plot.axhline(y=0, color='k')
@@ -235,7 +238,7 @@ elif analysis_type == "What-If Analysis":
         #----------------------------------------------------------------------#
         referene_column, interactive_column = what_if_container.columns([2,2])
         
-        simple_support_effect_column = referene_column.subheader("Support Effect")
+        simple_support_effect_column = referene_column.subheader("Reference Beam")
         reference_beam, reference_rxn_symbs = simply_supported_beam(beam_length, beam_E, beam_I)
         _pt_load = apply_point_load(reference_beam, point_load, point_load_loc)
         _moment_load = apply_moment_load(reference_beam, moment_load, moment_load_loc)
@@ -309,7 +312,8 @@ elif analysis_type == "What-If Analysis":
 
         bm_plot.plot(x_lst, bm_vals, 'g')
         #bm_plot.set_xlabel('x')
-        bm_plot.invert_yaxis()
+        if BM_preference == "Tension Side":
+            bm_plot.invert_yaxis()
         bm_plot.set_ylabel('M (kN-m)')
         bm_plot.set_title("Bending Moment Plot")
         bm_plot.axhline(y=0, color='k')
@@ -326,7 +330,7 @@ elif analysis_type == "What-If Analysis":
         
         reference_analysis_plots.pyplot(reference_fig)
     
-        support_interactive_column = interactive_column.subheader("Beam Analysis")
+        support_interactive_column = interactive_column.subheader("Interactive")
         support_effect = interactive_column.radio(label = 'Type of Support', options = ['Simply Supported', 'Fixed', 'Proped Cantilever', 'Cantilever'], horizontal=True)
 
         if 'support_effect' not in st.session_state:
@@ -416,7 +420,8 @@ elif analysis_type == "What-If Analysis":
 
         bm_plot.plot(x_lst, bm_vals, 'g')
         #bm_plot.set_xlabel('x')
-        bm_plot.invert_yaxis()
+        if BM_preference == "Tension Side":
+            bm_plot.invert_yaxis()
         bm_plot.set_ylabel('M (kN-m)')
         bm_plot.set_title("Bending Moment Plot")
         bm_plot.axhline(y=0, color='k')
