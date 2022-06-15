@@ -17,6 +17,8 @@ def beam_instantiate(L: float, E: float, I: float):
     E: Young's Modulus (MPa)
     I: Second Moment of Inertia (m^4)
     """
+    E = E * (10**6) #converts from MPa to Pa
+   
     return Beam(L, E, I)
 
 def create_sympy_symbol(variable: str):
@@ -29,9 +31,6 @@ def create_sympy_symbol(variable: str):
 
 def beam_calling(beam_type_inp, ):
     pass
-
-
-
 
 
 
@@ -140,8 +139,34 @@ def proped_cantilever_beam(L: float, E: float, I: float):
 
 
 def cantilever_beam(L: float, E: float, I: float):
+    """
+    Returns a Cantilever beam instance with bundary condition and Reaction load initialized.
+    L: Length (meters)
+    E: Young's Modulus (MPa)
+    I: Second Moment of Inertia (m^4)
+    """
+    cantilever_beam = beam_instantiate(L, E, I)
 
-    raise NotImplementedError
+    # create sympy symbol for Reaction Load
+    rxn_symb = []
+    
+    R_0 = create_sympy_symbol("R_0")
+    rxn_symb.append(R_0)
+    M_0 = create_sympy_symbol("M_0")
+    rxn_symb.append(M_0)
+
+    
+    # Apply Reaction Loads
+    cantilever_beam.apply_load(R_0, 0, -1)
+    cantilever_beam.apply_load(M_0, 0, -2)
+
+    # Apply deflections and slope constraints
+    cantilever_beam.bc_slope.append((0,0))
+
+    cantilever_beam.bc_deflection.append((0,0))
+    
+
+    return cantilever_beam, rxn_symb
 
 
 
@@ -202,13 +227,14 @@ def solve_for_rxns(beam_inst, rxn_symb: list):
     return _rxn_loads
 
 
-def slope_eqn(beam_inst):
+def cantilever_slope_eqn(beam_inst, rxn_symbs):
     """
-    
+    derives slope equation for cantilever beam by integrating the moment equation
     """
+
     raise NotImplementedError
 
-def deflection_eqn(beam_inst):
+def cntilever_deflection_eqn(beam_inst, rxn_symbs):
 
     raise NotImplementedError
 
@@ -271,39 +297,6 @@ def beam_viz(beam_inst, beam_type, rxn_symbs):
 
 
 ##########
-"""
 
-######################### What-If Analysis ###################################
-elif analysis_type == "What-If Analysis":
-    what_if_container = st.container()
-    what_if_container.header("What-If Analysis")
-
-    what_if_analysis_type = what_if_container.radio(label = 'Which aspect you want to Analyse?', options = ['Support Effect', 'Loading Effect'])
-
-    if 'what_if_analysis_type' not in st.session_state:
-        st.session_state.what_if_analysis_type = what_if_analysis_type
-
-    referene_column, interactive_column = what_if_container.columns(2)
-
-    if what_if_analysis_type == "Support Effect":
-        ################ Support Effect #########
-
-
-        
-        simple_support_effect_column = referene_column.subheader("Support Effect")
-
-
-        support_interactive_column = interactive_column.subheader("Beam Analysis")
-
-
-    elif what_if_analysis_type == "Loading Effect":
-        ################ Support Effect #########
-        simple_loading_effect_column = referene_column.subheader("Loading Effect")
-
-        loading_interactive_column = interactive_column.subheader("Beam Analysis")
-
-
-"""
-    
     
     
