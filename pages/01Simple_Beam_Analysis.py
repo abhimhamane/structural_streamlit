@@ -238,7 +238,7 @@ elif analysis_type == "What-If Analysis":
         moment_load_inp_form.form_submit_button("Apply Moment Load")
     
         #----------------------------------------------------------------------#
-        referene_column, interactive_column = what_if_container.columns([2,2])
+        referene_column, interactive_column = what_if_container.columns([2,3])
         
         simple_support_effect_column = referene_column.subheader("Reference Beam")
         reference_beam, reference_rxn_symbs = simply_supported_beam(beam_length, beam_E, beam_I)
