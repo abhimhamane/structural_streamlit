@@ -35,7 +35,7 @@ if analysis_type == "Simple Analysis":
 
     ####### Select Type of Beam
     
-    beam_type = simple_container.radio(label = 'Type of Beams', options = ['Simply Supported Beam', 'Fixed Beam', 'Proped Cantilever Beam', 'Cantilever Beam'], horizontal=True)
+    beam_type = simple_container.radio(label = 'Type of Beam', options = ['Simply Supported Beam', 'Fixed Beam', 'Proped Cantilever Beam', 'Cantilever Beam'], horizontal=True)
 
     if 'beam_type' not in st.session_state:
         simple_container.session_state.beam_type = beam_type
@@ -57,21 +57,22 @@ if analysis_type == "Simple Analysis":
     ##step1. Taking Input for type of beam
     ##step2. Taking Input for Loadings on Beam
     ##        Type of beam will be session state variable
-    load_col, simple_analysis_col = simple_container.columns([1, 2])
+    
 
 
     ########################## LOADING COLUMN ##############
-    load_col.subheader("Loading Cases")
+    simple_container.subheader("Loading Input")
+    simple_pt_load_form, simple_udl_form, simple_moment_form = simple_container.columns([1,1,1])
 
     ########### Point Load Form ############
-    pt_load_inp_form = load_col.form("simple_loadings_form_pt")
+    pt_load_inp_form = simple_pt_load_form.form("simple_loadings_form_pt")
     point_load = pt_load_inp_form.slider("Point Magnitude (kN)", 0.0, 25.0, 10.0, step=1.0)
     point_load_loc = pt_load_inp_form.slider("Point Load Location (m)", 0.0, beam_length, beam_length/2, step=0.1)  
     pt_load_inp_form.form_submit_button("Apply Point Load")
 
 
     ##### UDL Form #########
-    udl_load_inp_form = load_col.form("simple_loadings_form_udl")
+    udl_load_inp_form = simple_udl_form.form("simple_loadings_form_udl")
     udl_load = udl_load_inp_form.slider("UDL Magnitude (kN/m)", 0.0, 20.0, 10.0, step=1.0)
 
     
@@ -84,12 +85,13 @@ if analysis_type == "Simple Analysis":
     udl_load_inp_form.form_submit_button("Apply UDL")
 
     ##### Moment Load Form ########
-    moment_load_inp_form = load_col.form("simple_loadings_form_moment")
+    moment_load_inp_form = simple_moment_form.form("simple_loadings_form_moment")
     moment_load = moment_load_inp_form.slider("Moment Magnitude (kN/m)", -20.0, 20.0, 0.0, step=1.0)
     moment_load_loc = moment_load_inp_form.slider("Moment Load Location (m)", 0.0, beam_length, beam_length/2, step=0.1)
     moment_load_inp_form.form_submit_button("Apply Moment Load")
     
     ######################### Analysis COLUMN ##############
+    simple_analysis_col = simple_container.container()
     simple_analysis_col.subheader("Analysis Results")
 
         # then for each loading form call apply load func
@@ -439,8 +441,53 @@ elif analysis_type == "What-If Analysis":
         support_effect_plots.pyplot(support_effect_fig)
 
     elif what_if_analysis_type == "Loading Effect":
-        ################ Support Effect #########
-        referene_column, interactive_column = what_if_container.columns([2,1])
-        simple_loading_effect_column = referene_column.subheader("Loading Effect")
+        ################ Loading Effect #########
 
-        loading_interactive_column = interactive_column.subheader("Beam Analysis")
+        loading_effect_beam_type = what_if_container.radio("Which type of Beam:", options=["Simply Supported Beam", "Fixed Beam", "Proped Cantilever Beam", "Cantilever Beam"], horizontal=True)
+        
+        loading_effect_pt_load, loading_effect_udl, loading_effect_moment =  what_if_container.columns([1,1,1])
+
+         ########### Point Load Form ############
+        pt_load_inp_form = loading_effect_pt_load.form("simple_loadings_form_pt")
+        point_load = pt_load_inp_form.slider("Point Magnitude (kN)", 0.0, 25.0, 10.0, step=1.0)
+        point_load_loc = pt_load_inp_form.slider("Point Load Location (m)", 0.0, beam_length, beam_length/2, step=0.1)  
+        pt_load_inp_form.form_submit_button("Apply Point Load")
+
+
+        ##### UDL Form #########
+        udl_load_inp_form = loading_effect_udl.form("simple_loadings_form_udl")
+        udl_load = udl_load_inp_form.slider("UDL Magnitude (kN/m)", 0.0, 20.0, 10.0, step=1.0)
+
+        
+        _lst = []
+        for i in range(0, int(beam_length+1)):
+            _lst.append(str(i))
+        udl_strt_loc, udl_end_loc = udl_load_inp_form.select_slider("label", options=_lst, value=(_lst[0], _lst[-1]))
+        ## start and end location is a string - later convert it to float in order to use
+        
+        udl_load_inp_form.form_submit_button("Apply UDL")
+
+        ##### Moment Load Form ########
+        moment_load_inp_form = loading_effect_moment.form("simple_loadings_form_moment")
+        moment_load = moment_load_inp_form.slider("Moment Magnitude (kN/m)", -20.0, 20.0, 0.0, step=1.0)
+        moment_load_loc = moment_load_inp_form.slider("Moment Load Location (m)", 0.0, beam_length, beam_length/2, step=0.1)
+        moment_load_inp_form.form_submit_button("Apply Moment Load")
+        
+        
+        referene_column, interactive_column = what_if_container.columns([2,1])
+        simple_loading_effect_column = referene_column.subheader("Reference Beam")
+
+
+
+        reference_loading_beam = Beam(beam_length, beam_E, beam_I)
+
+
+
+        reference_viz_loading_beam = Beam(beam_length, beam_E, beam_I)
+
+
+        loading_interactive_column = interactive_column.subheader("What-If")
+        interactive_loading_beam = Beam(beam_length, beam_E, beam_I)
+
+
+        interactive_viz_loading_beam = Beam(beam_length, beam_E, beam_I)
