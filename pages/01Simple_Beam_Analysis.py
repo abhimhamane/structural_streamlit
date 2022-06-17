@@ -145,12 +145,6 @@ if analysis_type == "Simple Analysis":
     
     shear_plot.plot(x_lst, shear_vals, 'b')
     
-    shear_max = max(shear_vals)
-    shear_max_pos = shear_vals.index(shear_max)
-    shear_min = min(shear_vals)
-    #shear_zero = shear_vals.index(0.0)
-    shear_min_pos = shear_vals.index(shear_min)
-    shear_plot.annotate(str(shear_max)+" kN", xy=(shear_max_pos, shear_max), xytext=(shear_max_pos-1, shear_max+6), xycoords='data')
     
     shear_plot.spines.right.set_visible(False)
     shear_plot.spines.top.set_visible(False)
@@ -293,13 +287,7 @@ elif analysis_type == "What-If Analysis":
         
         shear_plot.plot(x_lst, shear_vals, 'b')
         
-        shear_max = max(shear_vals)
-        shear_max_pos = shear_vals.index(shear_max)
-        shear_min = min(shear_vals)
-        #shear_zero = shear_vals.index(0.0)
-        shear_min_pos = shear_vals.index(shear_min)
-        shear_plot.annotate(str(shear_max)+" kN", xy=(shear_max_pos, shear_max), xytext=(shear_max_pos-1, shear_max+6), xycoords='data')
-        
+        # Complete annotation of plots
         shear_plot.spines.right.set_visible(False)
         shear_plot.spines.top.set_visible(False)
 
@@ -401,13 +389,7 @@ elif analysis_type == "What-If Analysis":
         
         shear_plot.plot(x_lst, shear_vals, 'b')
         
-        shear_max = max(shear_vals)
-        shear_max_pos = shear_vals.index(shear_max)
-        shear_min = min(shear_vals)
-        #shear_zero = shear_vals.index(0.0)
-        shear_min_pos = shear_vals.index(shear_min)
-        shear_plot.annotate(str(shear_max)+" kN", xy=(shear_max_pos, shear_max), xytext=(shear_max_pos-1, shear_max+6), xycoords='data')
-        
+        # Complete annotation of plots
         shear_plot.spines.right.set_visible(False)
         shear_plot.spines.top.set_visible(False)
 
@@ -539,13 +521,7 @@ elif analysis_type == "What-If Analysis":
         
         shear_plot.plot(x_lst, shear_vals, 'b')
         
-        shear_max = max(shear_vals)
-        shear_max_pos = shear_vals.index(shear_max)
-        shear_min = min(shear_vals)
-        #shear_zero = shear_vals.index(0.0)
-        shear_min_pos = shear_vals.index(shear_min)
-        shear_plot.annotate(str(shear_max)+" kN", xy=(shear_max_pos, shear_max), xytext=(shear_max_pos-1, shear_max+6), xycoords='data')
-        
+        # Completer annotation of plots
         shear_plot.spines.right.set_visible(False)
         shear_plot.spines.top.set_visible(False)
 
@@ -643,13 +619,7 @@ elif analysis_type == "What-If Analysis":
         
         shear_plot.plot(x_lst, shear_vals, 'b')
         
-        shear_max = max(shear_vals)
-        shear_max_pos = shear_vals.index(shear_max)
-        shear_min = min(shear_vals)
-        #shear_zero = shear_vals.index(0.0)
-        shear_min_pos = shear_vals.index(shear_min)
-        shear_plot.annotate(str(shear_max)+" kN", xy=(shear_max_pos, shear_max), xytext=(shear_max_pos-1, shear_max+6), xycoords='data')
-        
+        # Complete annotation of plots
         shear_plot.spines.right.set_visible(False)
         shear_plot.spines.top.set_visible(False)
 
