@@ -456,7 +456,7 @@ elif analysis_type == "What-If Analysis":
 
         ##### UDL Form #########
         udl_load_inp_form = loading_effect_udl.form("simple_loadings_form_udl")
-        udl_load = udl_load_inp_form.slider("UDL Magnitude (kN/m)", 0.0, 20.0, 10.0, step=1.0)
+        udl_load = udl_load_inp_form.slider("UDL Magnitude (kN/m)", 0.0, 20.0, 0.0, step=1.0)
 
         
         _lst = []
@@ -475,7 +475,8 @@ elif analysis_type == "What-If Analysis":
         
         
         referene_column, interactive_column = what_if_container.columns([1,1])
-        simple_loading_effect_column = referene_column.subheader("Reference Beam")
+        referene_column.subheader("Reference Beam")
+        interactive_column.subheader("What-If")
 
         # initializing Reference Beam
         if loading_effect_beam_type == "Simply Supported Beam":
@@ -581,8 +582,102 @@ elif analysis_type == "What-If Analysis":
         
         ############
 
-        loading_interactive_column = interactive_column.subheader("What-If")
-        interactive_loading_beam = Beam(beam_length, beam_E, beam_I)
+        
+        
+         # initializing Reference Beam
+        if loading_effect_beam_type == "Simply Supported Beam":
+            interactive_loading_beam, reacn_symbs = simply_supported_beam(beam_length, beam_E, beam_I)
+        elif loading_effect_beam_type =="Fixed Beam":
+            interactive_loading_beam ,reacn_symbs = fixed_beam(beam_length, beam_E, beam_I)
+        elif loading_effect_beam_type =="Proped Cantilever Beam":
+            interactive_loading_beam, reacn_symbs = proped_cantilever_beam(beam_length, beam_E, beam_I)
+        elif loading_effect_beam_type =="Cantilever Beam":
+            interactive_loading_beam, reacn_symbs = cantilever_beam(beam_length, beam_E, beam_I)
+
+        # --- Loading --- #
+        _pt_load = apply_point_load(interactive_loading_beam, point_load, point_load_loc)
+        _moment_load = apply_moment_load(interactive_loading_beam, moment_load, moment_load_loc)
+        _udl_load = apply_udl(interactive_loading_beam, udl_load, float(udl_strt_loc), float(udl_end_loc))
+
+        simple_loading_effect_viz = interactive_column.container()
+        simple_loading_effect_viz.image(beam_viz(interactive_loading_beam, loading_effect_beam_type, reacn_symbs))
+
+         #### Solving for reaction loads
+        rxn_loads = solve_for_rxns(interactive_loading_beam ,reacn_symbs)
+    
+
+        loading_effect_analysis_rxn_loads = interactive_column.container()
+        #support_effect_analysis_rxn_loads.write(rxn_loads)
+
+        #### Plotting SFD, BMD and Deflections charts
+        interactive_loading_effect_plots = interactive_column.container()
+        shear_eqn = interactive_loading_beam.shear_force()
+        bm_eqn = interactive_loading_beam.bending_moment()
+        #slp_eqn = simple_beam.slope()
+        #defl_eqn = simple_beam.deflection()
+        
+        "Shear Equation:"
+        shear_eqn
+        " "
+        "Bending Moment Equation:"
+        bm_eqn
+        "Deflection Equation"
+        #defl_eqn
 
 
-        interactive_viz_loading_beam = Beam(beam_length, beam_E, beam_I)
+        loading_effect_fig, (shear_plot, bm_plot, deflection_plot) = plt.subplots(3, 1)
+        ax_x = np.arange(0, interactive_loading_beam.length, 0.01)
+        x_lst = []
+        for i in ax_x:
+            x_lst.append(i)
+
+            
+        shear_vals = []
+        bm_vals = []
+        defl_val = []
+        x = create_sympy_symbol("x")
+        for i in x_lst:
+            shear_vals.append(float(shear_eqn.subs(x, i)))
+            bm_vals.append(float(bm_eqn.subs(x, i)))
+            #defl_val.append(float(defl_eqn.subs(x, i)))
+        
+        shear_plot.plot(x_lst, shear_vals, 'b')
+        
+        shear_max = max(shear_vals)
+        shear_max_pos = shear_vals.index(shear_max)
+        shear_min = min(shear_vals)
+        #shear_zero = shear_vals.index(0.0)
+        shear_min_pos = shear_vals.index(shear_min)
+        shear_plot.annotate(str(shear_max)+" kN", xy=(shear_max_pos, shear_max), xytext=(shear_max_pos-1, shear_max+6), xycoords='data')
+        
+        shear_plot.spines.right.set_visible(False)
+        shear_plot.spines.top.set_visible(False)
+
+        shear_plot.set_ylabel('V (kN)')
+        shear_plot.set_title("Shear Plot")
+        shear_plot.x_lim = 0
+        shear_plot.axhline(y=0, color='k')
+        shear_plot.axvline(x=0, color='k')
+        shear_plot.axvline(x=beam_length, color='k')
+        
+        
+        shear_plot.grid(True, which='both')
+
+
+        bm_plot.plot(x_lst, bm_vals, 'g')
+        #bm_plot.set_xlabel('x')
+        if BM_preference == "Tension Side":
+            bm_plot.invert_yaxis()
+        bm_plot.set_ylabel('M (kN-m)')
+        bm_plot.set_title("Bending Moment Plot")
+        bm_plot.axhline(y=0, color='k')
+        bm_plot.axvline(x=0, color='k')
+        bm_plot.axvline(x=beam_length, color='k')
+        bm_plot.grid(True, which='both')
+
+        plt.subplots_adjust(bottom=0.1,  
+                    top=0.9, 
+                    wspace=0.4, 
+                    hspace=0.4)
+
+        interactive_loading_effect_plots.pyplot(loading_effect_fig)
