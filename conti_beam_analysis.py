@@ -12,8 +12,8 @@ from PIL import Image
 
 
 def equally_spaced_sprts(length, num_spans):
-    _num_sprts = num_spans + 1
-    return linspace(0, int(length), int(_num_sprts))
+    
+    return linspace(0, length, num_spans + 1)
 
 def create_span_list(num_spans):
     _opt_list = []
