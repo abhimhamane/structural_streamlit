@@ -52,6 +52,11 @@ if type_of_spans == "Equal":
     _span_options = create_span_list(num_spans)
     _span_choice = further_params.radio("choose span no:", options= _span_options, horizontal=True)
 
+    #-- Initialization of beam
+
+    
+
+
     #-------Loading Form-----#
     pt_load_frm, udl_frm, mmt_frm = further_params.columns([1,1,1])
     #----initializing a session state variable to save the user input
@@ -108,7 +113,16 @@ if type_of_spans == "Equal":
     
     st.session_state.moment_matrix[_span_id-1]=(moment_load, float(moment_load_loc))
     
+
+    # Initailization of beam
+    viz_beam = create_continious_beam(total_length, sprt_cond, _equally_spaced_sprt_loc,E, I)
+    cont_beam_sprt_pen = viz_beam.draw(pictorial=True)
     
+    cont_beam_sprt_pen.save("cont_temp_beam_viz.png")
+
+    
+    _image = Image.open('cont_temp_beam_viz.png')
+    further_params.image(_image)
 
 
 elif type_of_spans == "Unequal":
