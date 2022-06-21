@@ -13,6 +13,7 @@ from conti_beam_analysis import *
 E = 25000
 I = 0.000525
 
+
 #--------Sidebar Parameters -------------#
 cont_beam_analysis_params = st.sidebar.form("Continuous_beam_analysis_parameters")
 cont_beam_analysis_params.header("Continuous Beam Analysis Parameters")
@@ -52,9 +53,25 @@ if type_of_spans == "Equal":
     _span_choice = further_params.radio("choose span no:", options= _span_options, horizontal=True)
 
     #-------Loading Form-----#
-    pt_load_matrix = []
+    pt_load_frm, udl_frm, mmt_frm = further_params.columns([1,1,1])
+    #----initializing a session state variable to save the user input
+    #---Read More @ https://docs.streamlit.io/library/api-reference/session-state
+    #---Handy tutorial @ https://www.youtube.com/watch?v=5l9COMQ3acc
+    if 'pt_load_matrix' not in st.session_state:
+        st.session_state.pt_load_matrix = [None, None, None, None]
+
+    if 'udl_matrix' not in st.session_state:
+        st.session_state.udl_matrix = [None, None, None, None]
+
+    if 'moment_matrix' not in st.session_state:
+        st.session_state.moment_matrix = [None, None, None, None]
+    
+    pt_load_container = st.session_state.pt_load_matrix
+    udl_container = st.session_state.udl_matrix
+    moment_container = st.session_state.moment_matrix
+    
     # point_load_form
-    pt_load_inp_form = further_params.form("simple_loadings_form_pt")
+    pt_load_inp_form = pt_load_frm.form("simple_loadings_form_pt")
     pt_load_inp_form.write(_span_choice)
     _span_id = int(_span_choice[5])
     
@@ -62,14 +79,36 @@ if type_of_spans == "Equal":
     point_load_loc = pt_load_inp_form.slider("Point Load Location (m)", float(_equally_spaced_sprt_loc[_span_id-1]), float(_equally_spaced_sprt_loc[_span_id]), float(_equally_spaced_sprt_loc[_span_id]+_equally_spaced_sprt_loc[_span_id-1])/2, step=0.1)  
     pt_load_inp_form.form_submit_button("Apply Point Load")
 
-
-    pt_load_matrix.append((point_load, point_load_loc))
-    if 'pt_load_matrix' not in st.session_state:
-            st.session_state.pt_load_matrix = pt_load_matrix 
-
-    pt_load_matrix
+    #----- Saving Load
+    st.session_state.pt_load_matrix[_span_id-1] = (point_load, point_load_loc)
     
+    ##### UDL Form #########
+    udl_load_inp_form = udl_frm.form("simple_loadings_form_udl")
+    udl_load_inp_form.write(_span_choice)
+    _span_id = int(_span_choice[5])
+    udl_load = udl_load_inp_form.slider("UDL Magnitude (kN/m)", 0.0, 20.0, 10.0, step=1.0)
 
+    
+    lat = list(np.around(np.linspace(float(_equally_spaced_sprt_loc[_span_id-1]), float(_equally_spaced_sprt_loc[_span_id]), 5),decimals = 2))
+    udl_strt_loc, udl_end_loc = udl_load_inp_form.select_slider("label", options=lat, value=(lat[0], lat[-1]))
+    
+    ## start and end location is a string - later convert it to float in order to use
+    
+    udl_load_inp_form.form_submit_button("Apply UDL")
+
+    st.session_state.udl_matrix[_span_id-1]=(udl_load, float(udl_strt_loc), float(udl_end_loc))
+    
+    ##### Moment Load Form ########
+    moment_load_inp_form = mmt_frm.form("simple_loadings_form_moment")
+    moment_load_inp_form.write(_span_choice)
+    _span_id = int(_span_choice[5])
+    moment_load = moment_load_inp_form.slider("Moment Magnitude (kN/m)", -20.0, 20.0, 0.0, step=1.0)
+    moment_load_loc = moment_load_inp_form.slider("Moment Load Location (m)", float(_equally_spaced_sprt_loc[_span_id-1]), float(_equally_spaced_sprt_loc[_span_id]), float(_equally_spaced_sprt_loc[_span_id]+_equally_spaced_sprt_loc[_span_id-1])/2, step=0.1)
+    moment_load_inp_form.form_submit_button("Apply Moment Load")
+    
+    st.session_state.moment_matrix[_span_id-1]=(moment_load, float(moment_load_loc))
+    
+    
 
 
 elif type_of_spans == "Unequal":
