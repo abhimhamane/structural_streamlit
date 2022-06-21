@@ -51,8 +51,54 @@ def create_contnious_beam(total_length: float, end_supports: str, support_list: 
     for inter_sprt in support_list[1:-1]:
         _viz_beam.apply_support(float(inter_sprt), "roller")
     
+
+    
+
     return _viz_beam
 
 
-def create_reaction_loads(total_length: float, end_supports: str, support_list: list):
-    pass
+def create_reaction_load_symbols(total_length: float, end_supports: str, support_list: list):
+    sprt_rxn_list=[[], []]
+    if end_supports == "Fix-Fix":
+        r_strt = symbols("R_0")
+        sprt_rxn_list[0].append(r_strt)
+        m_strt = symbols("M_0")
+        sprt_rxn_list[0].append(m_strt)
+        r_end = symbols("R_"+str(total_length))
+        sprt_rxn_list[0].append(r_end)
+        m_end = symbols("M_"+str(total_length))
+        sprt_rxn_list[0].append(m_end)
+
+    elif end_supports == "Fix-Pin":
+        r_strt = symbols("R_0")
+        sprt_rxn_list[0].append(r_strt)
+        m_strt = symbols("M_0")
+        sprt_rxn_list[0].append(m_strt)
+        r_end = symbols("R_"+str(total_length))
+        sprt_rxn_list[0].append(r_end)
+        
+        
+    elif end_supports == "Fix-Free":
+        r_strt = symbols("R_0")
+        sprt_rxn_list[0].append(r_strt)
+        m_strt = symbols("M_0")
+        sprt_rxn_list[0].append(m_strt)
+        
+        
+    elif end_supports == "Pin-Pin":
+        r_strt = symbols("R_0")
+        sprt_rxn_list[0].append(r_strt)
+        
+        r_end = symbols("R_"+str(total_length))
+        sprt_rxn_list[0].append(r_end)
+        
+    elif end_supports == "Pin-Free":
+        r_strt = symbols("R_0")
+        sprt_rxn_list[0].append(r_strt)
+        
+    
+    # Intermediate Sprts
+    for inter_sprt in support_list[1:-1]:
+        sprt_rxn_list[1].append(symbols("R_" + str(inter_sprt)))
+    
+    return sprt_rxn_list

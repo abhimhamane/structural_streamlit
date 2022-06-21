@@ -124,6 +124,8 @@ if type_of_spans == "Equal":
     _image = Image.open('cont_temp_beam_viz.png')
     further_params.image(_image)
 
+    st.write(create_reaction_load_symbols(total_length,sprt_cond, _equally_spaced_sprt_loc))
+
 
 elif type_of_spans == "Unequal":
     _span_options = create_span_list(num_spans)
