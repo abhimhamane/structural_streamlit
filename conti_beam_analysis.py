@@ -28,7 +28,7 @@ def create_pandas_df():
     return pd.DataFrame(columns=['num_spans','span_length'])
 
 
-def create_continious_beam(total_length: float, end_supports: str, support_list: list,_E, _I):
+def create_contnious_beam(total_length: float, end_supports: str, support_list: list,_E, _I):
     _beam = Beam(total_length, _E, _I)
     _viz_beam = Beam(total_length, _E, _I)
     # apply End support conditions

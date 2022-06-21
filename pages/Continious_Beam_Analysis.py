@@ -115,7 +115,7 @@ if type_of_spans == "Equal":
     
 
     # Initailization of beam
-    viz_beam = create_continious_beam(total_length, sprt_cond, _equally_spaced_sprt_loc,E, I)
+    viz_beam = create_contnious_beam(total_length, sprt_cond, _equally_spaced_sprt_loc,E, I)
     cont_beam_sprt_pen = viz_beam.draw(pictorial=True)
     
     cont_beam_sprt_pen.save("cont_temp_beam_viz.png")
