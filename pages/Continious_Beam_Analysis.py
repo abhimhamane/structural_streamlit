@@ -3,6 +3,7 @@ from ossaudiodev import control_labels
 from requests import options
 import streamlit as st
 
+from sympy import symbols
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -145,7 +146,66 @@ if type_of_spans == "Equal":
     apply_moment_loads(cont_beam, moment_container)
 
     rxn_loads = solve_rxn_loads(cont_beam, rxn_symbs)
-    rxn_loads
+
+    cont_beam_analysis_plots = further_params.container()
+    shear_eqn = cont_beam.shear_force()
+    bm_eqn = cont_beam.bending_moment()
+    #slp_eqn = cont_beam.slope()
+    #defl_eqn = cont_beam.deflection()
+    fig, (shear_plot, bm_plot, deflection_plot) = plt.subplots(3, 1)
+    ax_x = np.arange(0, cont_beam.length, 0.01)
+    x_lst = []
+    for i in ax_x:
+        x_lst.append(i)
+
+        
+    shear_vals = []
+    bm_vals = []
+    defl_val = []
+    x = ("x")
+    for i in x_lst:
+        shear_vals.append(float(shear_eqn.subs(x, i)))
+        bm_vals.append(float(bm_eqn.subs(x, i)))
+        #defl_val.append(float(slp_eqn.subs(x, i)))
+    
+    shear_plot.plot(x_lst, shear_vals, 'b')
+    
+    
+    shear_plot.spines.right.set_visible(False)
+    shear_plot.spines.top.set_visible(False)
+
+    shear_plot.set_ylabel('V (kN)')
+    shear_plot.set_title("Shear Plot")
+    shear_plot.x_lim = 0
+    shear_plot.axhline(y=0, color='k')
+    shear_plot.axvline(x=0, color='k')
+    shear_plot.axvline(x=total_length, color='k')
+    
+    
+    shear_plot.grid(True, which='both')
+
+
+    bm_plot.plot(x_lst, bm_vals, 'g')
+    #bm_plot.set_xlabel('x')
+    if BM_preference == "Tension Side":
+        bm_plot.invert_yaxis()
+    
+    bm_plot.set_ylabel('M (kN-m)')
+    bm_plot.set_title("Bending Moment Plot")
+    bm_plot.axhline(y=0, color='k')
+    bm_plot.axvline(x=0, color='k')
+    bm_plot.axvline(x=total_length, color='k')
+    bm_plot.grid(True, which='both')
+
+
+
+    plt.subplots_adjust(bottom=0.1,  
+                    top=0.9, 
+                    wspace=0.4, 
+                    hspace=0.4)
+
+    cont_beam_analysis_plots.pyplot(fig)
+    
 
     
 
@@ -166,7 +226,7 @@ elif type_of_spans == "Unequal":
     
 
     
-    
+ 
 
 
 

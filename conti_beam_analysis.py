@@ -184,3 +184,8 @@ def solve_rxn_loads(cont_beam, rxn_symb_list):
 
     return _cleaned_results
 
+def continous_beam_slope_equation(cont_beam):
+    raise NotImplementedError
+
+def provide_bc(cont_beam):
+    raise NotImplementedError
