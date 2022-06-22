@@ -115,7 +115,7 @@ if type_of_spans == "Equal":
     
 
     # Initailization of beam
-    viz_beam = create_contnious_beam(total_length, sprt_cond, _equally_spaced_sprt_loc,E, I)
+    cont_beam, viz_beam = create_contnious_beam(total_length, sprt_cond, _equally_spaced_sprt_loc,E, I)
     cont_beam_sprt_pen = viz_beam.draw(pictorial=True)
     
     cont_beam_sprt_pen.save("cont_temp_beam_viz.png")
@@ -124,8 +124,11 @@ if type_of_spans == "Equal":
     _image = Image.open('cont_temp_beam_viz.png')
     further_params.image(_image)
 
-    st.write(create_reaction_load_symbols(total_length,sprt_cond, _equally_spaced_sprt_loc))
-
+    rxn_symbs = create_reaction_load_symbols(total_length,sprt_cond, _equally_spaced_sprt_loc)
+    apply_end_sprt_rxn_load(cont_beam, rxn_symbs, _equally_spaced_sprt_loc)
+    apply_interm_sprt_rxn_loads(cont_beam, rxn_symbs, _equally_spaced_sprt_loc)
+    st.write(cont_beam.bc_slope)
+    st.write(cont_beam.bc_deflection)
 
 elif type_of_spans == "Unequal":
     _span_options = create_span_list(num_spans)

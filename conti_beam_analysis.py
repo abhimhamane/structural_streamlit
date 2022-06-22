@@ -35,6 +35,7 @@ def create_contnious_beam(total_length: float, end_supports: str, support_list: 
     if end_supports == "Fix-Fix":
         _viz_beam.apply_support(0, "fixed")
         _viz_beam.apply_support(total_length, "fixed")
+
     elif end_supports == "Fix-Pin":
         _viz_beam.apply_support(0, "fixed")
         _viz_beam.apply_support(total_length, "pin")
@@ -54,51 +55,76 @@ def create_contnious_beam(total_length: float, end_supports: str, support_list: 
 
     
 
-    return _viz_beam
+    return _beam, _viz_beam
 
 
 def create_reaction_load_symbols(total_length: float, end_supports: str, support_list: list):
-    sprt_rxn_list=[[], []]
+    sprt_rxn_symb_list=[[], []]
     if end_supports == "Fix-Fix":
         r_strt = symbols("R_0")
-        sprt_rxn_list[0].append(r_strt)
+        sprt_rxn_symb_list[0].append(r_strt)
         m_strt = symbols("M_0")
-        sprt_rxn_list[0].append(m_strt)
+        sprt_rxn_symb_list[0].append(m_strt)
         r_end = symbols("R_"+str(total_length))
-        sprt_rxn_list[0].append(r_end)
+        sprt_rxn_symb_list[0].append(r_end)
         m_end = symbols("M_"+str(total_length))
-        sprt_rxn_list[0].append(m_end)
+        sprt_rxn_symb_list[0].append(m_end)
 
     elif end_supports == "Fix-Pin":
         r_strt = symbols("R_0")
-        sprt_rxn_list[0].append(r_strt)
+        sprt_rxn_symb_list[0].append(r_strt)
         m_strt = symbols("M_0")
-        sprt_rxn_list[0].append(m_strt)
+        sprt_rxn_symb_list[0].append(m_strt)
         r_end = symbols("R_"+str(total_length))
-        sprt_rxn_list[0].append(r_end)
-        
+        sprt_rxn_symb_list[0].append(r_end)
         
     elif end_supports == "Fix-Free":
         r_strt = symbols("R_0")
-        sprt_rxn_list[0].append(r_strt)
+        sprt_rxn_symb_list[0].append(r_strt)
         m_strt = symbols("M_0")
-        sprt_rxn_list[0].append(m_strt)
-        
+        sprt_rxn_symb_list[0].append(m_strt)
         
     elif end_supports == "Pin-Pin":
         r_strt = symbols("R_0")
-        sprt_rxn_list[0].append(r_strt)
+        sprt_rxn_symb_list[0].append(r_strt)
         
         r_end = symbols("R_"+str(total_length))
-        sprt_rxn_list[0].append(r_end)
+        sprt_rxn_symb_list[0].append(r_end)
         
     elif end_supports == "Pin-Free":
         r_strt = symbols("R_0")
-        sprt_rxn_list[0].append(r_strt)
+        sprt_rxn_symb_list[0].append(r_strt)
         
-    
     # Intermediate Sprts
     for inter_sprt in support_list[1:-1]:
-        sprt_rxn_list[1].append(symbols("R_" + str(inter_sprt)))
+        sprt_rxn_symb_list[1].append(symbols("R_" + str(inter_sprt)))
     
-    return sprt_rxn_list
+    return sprt_rxn_symb_list
+
+
+def apply_end_sprt_rxn_load(cont_beam, sprt_rxn_symb_list, support_list):
+    for sprt_rxn_symb in sprt_rxn_symb_list[0]:
+        if float(str(sprt_rxn_symb)[2:]) == 0:
+            if str(sprt_rxn_symb)[0] == "R":
+                cont_beam.apply_load(sprt_rxn_symb, 0, -1)
+                cont_beam.bc_deflection.append((0, 0))
+            elif str(sprt_rxn_symb)[0] == "M":
+                cont_beam.apply_load(sprt_rxn_symb, 0, -2)
+                cont_beam.bc_slope.append((0, 0))
+        else:
+            if str(sprt_rxn_symb)[0] == "R":
+                cont_beam.apply_load(sprt_rxn_symb, cont_beam.length, -1)
+                cont_beam.bc_deflection.append((cont_beam.length, 0))
+            elif str(sprt_rxn_symb)[0] == "M":
+                cont_beam.apply_load(sprt_rxn_symb, cont_beam.length, -2)
+                cont_beam.bc_slope.append((cont_beam.length, 0))
+        
+
+def apply_interm_sprt_rxn_loads(cont_beam, sprt_rxn_symb_list, support_list):
+    interm_sprt = support_list[1:-1]
+    for i in range(len(sprt_rxn_symb_list[1])):
+        cont_beam.apply_load(sprt_rxn_symb_list[1][i], interm_sprt[i], -1)
+        cont_beam.bc_deflection.append((interm_sprt[i], 0))
+
+
+        
