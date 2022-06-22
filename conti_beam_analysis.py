@@ -1,4 +1,5 @@
 from email import header
+from unicodedata import decimal
 from sympy.physics.continuum_mechanics import Beam
 from sympy import symbols
 
@@ -7,7 +8,7 @@ from sympy import SingularityFunction
 import matplotlib.pyplot as plt
 
 import pandas as pd
-from numpy import linspace
+from numpy import linspace, around
 from PIL import Image
 
 
@@ -145,3 +146,41 @@ def apply_moment_loads(cont_beam, moment_container):
         if mmt != None:
             if mmt[0] > 0.0:
                 cont_beam.apply_load(mmt[0], mmt[1], -2)
+
+
+def open_rxn_symbs_list(rxn_symb_list):
+    _lst = []
+    for _rxn in rxn_symb_list[0]:
+        _lst.append(_rxn)
+    for _rxn in rxn_symb_list[1]:
+        _lst.append(_rxn)
+    
+    return _lst
+
+def clean_rxn_results(rxn_vals: dict):
+    _key = (rxn_vals.keys())
+    _vals = (rxn_vals.values())
+    _rxn_loads = [(str(k)[:2]+str(around(float(str(k)[2:]), 2)),around(float(v), 3)) for k,v in zip(_key, _vals)]
+    return _rxn_loads
+
+def solve_rxn_loads(cont_beam, rxn_symb_list):
+    rxn_symb_list = open_rxn_symbs_list(rxn_symb_list)
+    _leng = len(rxn_symb_list)
+    
+    if _leng == 7:
+        cont_beam.solve_for_reaction_loads(rxn_symb_list[0],rxn_symb_list[1], rxn_symb_list[2], rxn_symb_list[3], rxn_symb_list[4], rxn_symb_list[5],rxn_symb_list[6])
+    elif _leng == 6:
+        cont_beam.solve_for_reaction_loads(rxn_symb_list[0],rxn_symb_list[1], rxn_symb_list[2], rxn_symb_list[3], rxn_symb_list[4], rxn_symb_list[5])
+    elif _leng == 5:
+        cont_beam.solve_for_reaction_loads(rxn_symb_list[0],rxn_symb_list[1], rxn_symb_list[2], rxn_symb_list[3], rxn_symb_list[4])
+    elif _leng == 4:
+        cont_beam.solve_for_reaction_loads(rxn_symb_list[0],rxn_symb_list[1], rxn_symb_list[2], rxn_symb_list[3])
+    elif _leng == 3:
+        cont_beam.solve_for_reaction_loads(rxn_symb_list[0],rxn_symb_list[1], rxn_symb_list[2])
+    elif _leng == 2:
+        cont_beam.solve_for_reaction_loads(rxn_symb_list[0],rxn_symb_list[1])
+    
+    _cleaned_results = clean_rxn_results(cont_beam.reaction_loads)
+
+    return _cleaned_results
+

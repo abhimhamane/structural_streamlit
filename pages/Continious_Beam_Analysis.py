@@ -131,7 +131,7 @@ if type_of_spans == "Equal":
     
     _cont_beam_viz.save("cont_temp_beam_viz.png")
     
-    st.write(cont_beam.applied_loads)
+    
     
     _image = Image.open('cont_temp_beam_viz.png')
     further_params.image(_image)
@@ -139,11 +139,19 @@ if type_of_spans == "Equal":
     rxn_symbs = create_reaction_load_symbols(total_length,sprt_cond, _equally_spaced_sprt_loc)
     apply_end_sprt_rxn_load(cont_beam, rxn_symbs, _equally_spaced_sprt_loc)
     apply_interm_sprt_rxn_loads(cont_beam, rxn_symbs, _equally_spaced_sprt_loc)
+
+    apply_point_loads(cont_beam, pt_load_container)
+    apply_udl_loads(cont_beam, udl_container)
+    apply_moment_loads(cont_beam, moment_container)
+
+    rxn_loads = solve_rxn_loads(cont_beam, rxn_symbs)
+    rxn_loads
+
     
 
     # Apply imposed Loads to cont beam
     apply_point_loads(cont_beam, pt_load_container)
-    st.write(cont_beam.applied_loads)
+    
 elif type_of_spans == "Unequal":
     _span_options = create_span_list(num_spans)
     
