@@ -12,14 +12,14 @@ from conti_beam_analysis import *
 
 #--------------- E and I standard values----------#
 E = 25000
-I = 0.000525
+I = 0.0005175
 
 
 #--------Sidebar Parameters -------------#
 cont_beam_analysis_params = st.sidebar.form("Continuous_beam_analysis_parameters")
 cont_beam_analysis_params.header("Continuous Beam Analysis Parameters")
 total_length = cont_beam_analysis_params.slider("Length (m)", 5.0, 35.0, 10.0, step=1.0)
-num_spans = cont_beam_analysis_params.slider("Number of spans:", 2.0, 4.0, 3.0, step=1.0)
+num_spans = int(cont_beam_analysis_params.slider("Number of spans:", 2.0, 4.0, 3.0, step=1.0))
 type_of_spans = cont_beam_analysis_params.radio("Nature of Spans:", options=['Equal', 'Unequal'], horizontal=True)
 
 BM_preference = cont_beam_analysis_params.radio("Choose your BM Drawing convention:", options=['Compression Side' ,'Tension Side'], horizontal=True)
@@ -51,44 +51,38 @@ if type_of_spans == "Equal":
     
     #print(_equally_spaced_sprt_loc)
     _span_options = create_span_list(num_spans)
-    #_span_choice = further_params.radio("choose span no:", options= _span_options, horizontal=True)
-
+    _span_choice = further_params.radio("choose span no:", options= _span_options, horizontal=True)
+    
     #-- Initialization of beam
 
-    
-
-
     #-------Loading Form-----#
-    loading_form_opt = further_params.radio("Choose the options:", options=['Wait for loading input!!', 'Analyse directly'])
-
     pt_load_frm, udl_frm, mmt_frm = further_params.columns([1,1,1])
     #----initializing a session state variable to save the user input
     #---Read More @ https://docs.streamlit.io/library/api-reference/session-state
     #---Handy tutorial @ https://www.youtube.com/watch?v=5l9COMQ3acc
     if 'pt_load_matrix' not in st.session_state:
-        st.session_state.pt_load_matrix = generate_list(num_spans)
+        st.session_state.pt_load_matrix = [None, None, None, None]
 
     if 'udl_matrix' not in st.session_state:
-        st.session_state.udl_matrix = generate_list(num_spans)
+        st.session_state.udl_matrix = [None, None, None, None]
 
 
     if 'moment_matrix' not in st.session_state:
-        st.session_state.moment_matrix = generate_list(num_spans)
+        st.session_state.moment_matrix = [None, None, None, None]
 
-    
-    pt_load_container = st.session_state.pt_load_matrix
-    udl_container = st.session_state.udl_matrix
-    moment_container = st.session_state.moment_matrix
-    
+        
     # point_load_form
     pt_load_inp_form = pt_load_frm.form("simple_loadings_form_pt")
-
-    _span_choice = pt_load_inp_form.select("Choose the Span:", options= _span_options)
+    pt_load_inp_form.write(_span_choice)
+    _span_id = int(_span_choice[5])
     point_load = pt_load_inp_form.slider("Point Magnitude (kN)", 0.0, 25.0, 10.0, step=1.0)
     point_load_loc = pt_load_inp_form.slider("Point Load Location (m)", float(_equally_spaced_sprt_loc[_span_id-1]), float(_equally_spaced_sprt_loc[_span_id]), float(_equally_spaced_sprt_loc[_span_id]+_equally_spaced_sprt_loc[_span_id-1])/2, step=0.1)  
     pt_load_inp_form.form_submit_button("Apply Point Load")
 
     #----- Saving Load
+    print(_span_choice, _span_id)
+    st.session_state.pt_load_matrix
+    st.session_state.pt_load_matrix[_span_id-1] = [point_load, point_load_loc]
     
     
     ##### UDL Form #########
@@ -102,33 +96,30 @@ if type_of_spans == "Equal":
     udl_strt_loc, udl_end_loc = udl_load_inp_form.select_slider("label", options=lat, value=(lat[0], lat[-1]))
     
     ## start and end location is a string - later convert it to float in order to use
-    
     udl_load_inp_form.form_submit_button("Apply UDL")
 
-    
-    
+    #----- Saving Load
+    st.session_state.udl_matrix[_span_id-1] = [udl_load, float(udl_strt_loc), float(udl_end_loc)]
+
     ##### Moment Load Form ########
     moment_load_inp_form = mmt_frm.form("simple_loadings_form_moment")
     moment_load_inp_form.write(_span_choice)
     _span_id = int(_span_choice[5])
-    moment_load = moment_load_inp_form.slider("Moment Magnitude (kN/m)", -20.0, 20.0, 0.0, step=1.0)
+    moment_load = moment_load_inp_form.slider("Moment Magnitude (kN-m)", -20.0, 20.0, 0.0, step=1.0)
     moment_load_loc = moment_load_inp_form.slider("Moment Load Location (m)", float(_equally_spaced_sprt_loc[_span_id-1]), float(_equally_spaced_sprt_loc[_span_id]), float(_equally_spaced_sprt_loc[_span_id]+_equally_spaced_sprt_loc[_span_id-1])/2, step=0.1)
     moment_load_inp_form.form_submit_button("Apply Moment Load")
-    
 
-    st.session_state.pt_load_matrix[_span_id-1] = (point_load, point_load_loc)
-    st.session_state.udl_matrix[_span_id-1]=(udl_load, float(udl_strt_loc), float(udl_end_loc))
-    st.session_state.moment_matrix[_span_id-1]=(moment_load, float(moment_load_loc))
+    st.session_state.moment_matrix[_span_id-1] = [moment_load, float(moment_load_loc)]
     
     
     # Initailization of beam
     cont_beam, viz_beam = create_contnious_beam(total_length, sprt_cond, _equally_spaced_sprt_loc,E, I)
-    apply_point_loads(viz_beam, pt_load_container)
-    apply_udl_loads(viz_beam, udl_container)
-    apply_moment_loads(viz_beam, moment_container)
+    apply_point_loads(viz_beam, st.session_state.pt_load_matrix)
+    apply_udl_loads(viz_beam, st.session_state.udl_matrix)
+    apply_moment_loads(viz_beam, st.session_state.moment_matrix)
     
        
-    
+    #--- Vizualization of beams
     _cont_beam_viz = viz_beam.draw(pictorial=True)
     
     _cont_beam_viz.save("cont_temp_beam_viz.png")
@@ -137,14 +128,15 @@ if type_of_spans == "Equal":
     
     _image = Image.open('cont_temp_beam_viz.png')
     further_params.image(_image)
+
     #--- Applying Reaction Loads to Cont Beam
     rxn_symbs = create_reaction_load_symbols(total_length,sprt_cond, _equally_spaced_sprt_loc)
     apply_end_sprt_rxn_load(cont_beam, rxn_symbs, _equally_spaced_sprt_loc)
     apply_interm_sprt_rxn_loads(cont_beam, rxn_symbs, _equally_spaced_sprt_loc)
 
-    apply_point_loads(cont_beam, pt_load_container)
-    apply_udl_loads(cont_beam, udl_container)
-    apply_moment_loads(cont_beam, moment_container)
+    apply_point_loads(cont_beam, st.session_state.pt_load_matrix)
+    apply_udl_loads(cont_beam, st.session_state.udl_matrix)
+    apply_moment_loads(cont_beam, st.session_state.moment_matrix)
 
     rxn_loads = solve_rxn_loads(cont_beam, rxn_symbs)
 
@@ -211,7 +203,7 @@ if type_of_spans == "Equal":
     
 
     # Apply imposed Loads to cont beam
-    apply_point_loads(cont_beam, pt_load_container)
+    apply_point_loads(cont_beam, st.session_state.pt_load_matrix)
     
 elif type_of_spans == "Unequal":
     _span_options = create_span_list(num_spans)

@@ -11,11 +11,12 @@ import pandas as pd
 from numpy import linspace, around
 from PIL import Image
 
-
 def generate_list(num_spans):
     _lst = []
-    for i in range(num_spans):
-        _lst.append('None')
+    num_spans = int(num_spans)
+    for _i in range(num_spans):
+        _lst.append(None)
+    return _lst
 
 def equally_spaced_sprts(length, num_spans):
     
@@ -27,7 +28,6 @@ def create_span_list(num_spans):
         _opt_list.append("span "+str(_span_no + 1))
     
     return _opt_list
-
 
 
 def create_pandas_df():
@@ -58,9 +58,6 @@ def create_contnious_beam(total_length: float, end_supports: str, support_list: 
     for inter_sprt in support_list[1:-1]:
         _viz_beam.apply_support(float(inter_sprt), "roller")
     
-
-    
-
     return _beam, _viz_beam
 
 
