@@ -124,7 +124,7 @@ if analysis_type == "Simple Analysis":
     "Bending Moment Equation:"
     bm_eqn
     "Deflection Equation"
-    defl_eqn = deflection_equations(simple_beam, beam_type)
+    defl_eqn = deflection_equations(simple_beam)
 
 
     fig, (shear_plot, bm_plot, deflection_plot) = plt.subplots(3, 1)
@@ -266,7 +266,7 @@ elif analysis_type == "What-If Analysis":
         "Bending Moment Equation:"
         bm_eqn
         "Deflection Equation"
-        defl_eqn = deflection_equations(reference_beam, "Simply Supported Beam")
+        defl_eqn = deflection_equations(reference_beam)
 
 
         reference_fig, (shear_plot, bm_plot, deflection_plot) = plt.subplots(3, 1)
@@ -375,7 +375,7 @@ elif analysis_type == "What-If Analysis":
         "Bending Moment Equation:"
         bm_eqn
         "Deflection Equation"
-        defl_eqn = deflection_equations(support_effect_beam, "Proped Cantilever "+"Beam")
+        defl_eqn = deflection_equations(support_effect_beam)
 
 
         support_effect_fig, (shear_plot, bm_plot, deflection_plot) = plt.subplots(3, 1)
@@ -516,7 +516,7 @@ elif analysis_type == "What-If Analysis":
         "Bending Moment Equation:"
         bm_eqn
         "Deflection Equation"
-        defl_eqn = deflection_equations(reference_loading_beam, loading_effect_beam_type)
+        defl_eqn = deflection_equations(reference_loading_beam)
 
 
         support_effect_fig, (shear_plot, bm_plot, deflection_plot) = plt.subplots(3, 1)
@@ -622,7 +622,7 @@ elif analysis_type == "What-If Analysis":
         "Bending Moment Equation:"
         bm_eqn
         "Deflection Equation"
-        defl_eqn = deflection_equations(interactive_loading_beam, loading_effect_beam_type)
+        defl_eqn = deflection_equations(interactive_loading_beam)
 
 
         loading_effect_fig, (shear_plot, bm_plot, deflection_plot) = plt.subplots(3, 1)

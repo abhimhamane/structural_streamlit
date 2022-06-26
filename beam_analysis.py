@@ -280,7 +280,7 @@ def beam_viz(beam_inst, beam_type, rxn_symbs):
 
 ##########
 
-def deflection_equations(beam_inst, beam_type):
+def deflection_equations(beam_inst):
     x = sympy.symbols("x")
     C1 = sympy.symbols("C1")
     C2 = sympy.symbols("C2")
