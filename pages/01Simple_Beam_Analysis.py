@@ -118,12 +118,7 @@ if analysis_type == "Simple Analysis":
     #slp_eqn = simple_beam.slope()
     #defl_eqn = simple_beam.deflection()
     
-    "Shear Equation:"
-    shear_eqn
-    " "
-    "Bending Moment Equation:"
-    bm_eqn
-    "Deflection Equation"
+   
     defl_eqn = deflection_equations(simple_beam, beam_type)
 
 
@@ -204,7 +199,7 @@ elif analysis_type == "What-If Analysis":
 
     if what_if_analysis_type == "Support Effect":
         ################ Support Effect #########
-
+        support_effect = what_if_container.radio(label = 'Type of Support', options = ['Simply Supported', 'Fixed', 'Proped Cantilever', 'Cantilever'], horizontal=True)
 
         #### Loading Form
         col1, col2, col3 = what_if_container.columns([1,1,1])
@@ -234,7 +229,7 @@ elif analysis_type == "What-If Analysis":
         moment_load_inp_form.form_submit_button("Apply Moment Load")
     
         #----------------------------------------------------------------------#
-        referene_column, interactive_column = what_if_container.columns([2,3])
+        referene_column, interactive_column = what_if_container.columns([1,1])
         
         simple_support_effect_column = referene_column.subheader("Reference Beam")
         reference_beam, reference_rxn_symbs = simply_supported_beam(beam_length, beam_E, beam_I)
@@ -260,12 +255,7 @@ elif analysis_type == "What-If Analysis":
         #slp_eqn = simple_beam.slope()
         #defl_eqn = simple_beam.deflection()
         
-        "Shear Equation:"
-        shear_eqn
-        " "
-        "Bending Moment Equation:"
-        bm_eqn
-        "Deflection Equation"
+        
         defl_eqn = deflection_equations(reference_beam, "Simply Supported Beam")
 
 
@@ -329,8 +319,9 @@ elif analysis_type == "What-If Analysis":
         
         reference_analysis_plots.pyplot(reference_fig)
     
+        
+        
         support_interactive_column = interactive_column.subheader("Interactive")
-        support_effect = interactive_column.radio(label = 'Type of Support', options = ['Simply Supported', 'Fixed', 'Proped Cantilever', 'Cantilever'], horizontal=True)
 
         if 'support_effect' not in st.session_state:
             interactive_column.session_state.beam_type = support_effect
@@ -369,12 +360,7 @@ elif analysis_type == "What-If Analysis":
         #slp_eqn = simple_beam.slope()
         #defl_eqn = simple_beam.deflection()
         
-        "Shear Equation:"
-        shear_eqn
-        " "
-        "Bending Moment Equation:"
-        bm_eqn
-        "Deflection Equation"
+        
         defl_eqn = deflection_equations(support_effect_beam, support_effect+" Beam")
 
 
@@ -510,12 +496,7 @@ elif analysis_type == "What-If Analysis":
         #slp_eqn = simple_beam.slope()
         #defl_eqn = simple_beam.deflection()
         
-        "Shear Equation:"
-        shear_eqn
-        " "
-        "Bending Moment Equation:"
-        bm_eqn
-        "Deflection Equation"
+        
         defl_eqn = deflection_equations(reference_loading_beam, loading_effect_beam_type)
 
 
@@ -616,12 +597,7 @@ elif analysis_type == "What-If Analysis":
         #slp_eqn = simple_beam.slope()
         #defl_eqn = simple_beam.deflection()
         
-        "Shear Equation:"
-        shear_eqn
-        " "
-        "Bending Moment Equation:"
-        bm_eqn
-        "Deflection Equation"
+        
         defl_eqn = deflection_equations(interactive_loading_beam, loading_effect_beam_type)
 
 
