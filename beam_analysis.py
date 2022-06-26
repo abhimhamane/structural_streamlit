@@ -29,12 +29,6 @@ def create_sympy_symbol(variable: str):
     return symbols(variable)
 
 
-def beam_calling(beam_type_inp, ):
-    pass
-
-
-
-
 
 def simply_supported_beam(L: float, E: float, I: float):
     """
@@ -227,18 +221,6 @@ def solve_for_rxns(beam_inst, rxn_symb: list):
     return _rxn_loads
 
 
-def cantilever_slope_eqn(beam_inst, rxn_symbs):
-    """
-    derives slope equation for cantilever beam by integrating the moment equation
-    """
-
-    raise NotImplementedError
-
-def cntilever_deflection_eqn(beam_inst, rxn_symbs):
-
-    raise NotImplementedError
-
-
 def beam_viz(beam_inst, beam_type, rxn_symbs):
     _beam_inst_sprt = Beam(beam_inst.length, beam_inst.elastic_modulus, beam_inst.second_moment)
 
@@ -298,5 +280,31 @@ def beam_viz(beam_inst, beam_type, rxn_symbs):
 
 ##########
 
-    
+def deflection_equations(beam_inst, beam_type):
+    x = sympy.symbols("x")
+    C1 = sympy.symbols("C1")
+    C2 = sympy.symbols("C2")
+
+    c1_val = None
+    c2_val = None
+
+    moment_eqn = beam_inst.bending_moment()
+
+    # integration of moment equation to obtain slope and deflection equation
+    integrated_slp = sympy.integrate(moment_eqn, x)/(beam_inst.elastic_modulus*beam_inst.second_moment) + C1
+    integrated_defl = sympy.integrate(integrated_slp, x) + C2
+
+    if integrated_defl.subs(x, 0.0) == C2:
+        _bc_applied = integrated_defl.subs(x, beam_inst.length)
+        _bc_applied = _bc_applied.subs(C2, 0.0)
+
+        c1_val = sympy.solvers.solve(_bc_applied, C1)[0]
+
+        integrated_defl = integrated_defl.subs(C1, c1_val)
+        integrated_defl = integrated_defl.subs(C2, 0.0)
+
+
+
+
+    return integrated_defl
     

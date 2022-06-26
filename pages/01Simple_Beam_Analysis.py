@@ -124,7 +124,7 @@ if analysis_type == "Simple Analysis":
     "Bending Moment Equation:"
     bm_eqn
     "Deflection Equation"
-    #defl_eqn
+    defl_eqn = deflection_equations(simple_beam, beam_type)
 
 
     fig, (shear_plot, bm_plot, deflection_plot) = plt.subplots(3, 1)
@@ -141,7 +141,7 @@ if analysis_type == "Simple Analysis":
     for i in x_lst:
         shear_vals.append(float(shear_eqn.subs(x, i)))
         bm_vals.append(float(bm_eqn.subs(x, i)))
-        #defl_val.append(float(defl_eqn.subs(x, i)))
+        defl_val.append(float(defl_eqn.subs(x, i)))
     
     shear_plot.plot(x_lst, shear_vals, 'b')
     
@@ -173,13 +173,13 @@ if analysis_type == "Simple Analysis":
     bm_plot.grid(True, which='both')
 
 
-    """deflection_plot.plot(x_lst, defl_val)
+    deflection_plot.plot(x_lst, defl_val)
     deflection_plot.set_xlabel('x')
     deflection_plot.set_ylabel('Deflection (m)')
     deflection_plot.set_title("Deflection Plot")
     deflection_plot.axhline(y=0, color='k')
     deflection_plot.axvline(x=0, color='k')
-    deflection_plot.grid(True, which='both')"""
+    deflection_plot.grid(True, which='both')
 
 
     plt.subplots_adjust(bottom=0.1,  
@@ -266,7 +266,7 @@ elif analysis_type == "What-If Analysis":
         "Bending Moment Equation:"
         bm_eqn
         "Deflection Equation"
-        #defl_eqn
+        defl_eqn = deflection_equations(reference_beam, "Simply Supported Beam")
 
 
         reference_fig, (shear_plot, bm_plot, deflection_plot) = plt.subplots(3, 1)
@@ -283,7 +283,7 @@ elif analysis_type == "What-If Analysis":
         for i in x_lst:
             shear_vals.append(float(shear_eqn.subs(x, i)))
             bm_vals.append(float(bm_eqn.subs(x, i)))
-            #defl_val.append(float(defl_eqn.subs(x, i)))
+            defl_val.append(float(defl_eqn.subs(x, i)))
         
         shear_plot.plot(x_lst, shear_vals, 'b')
         
@@ -297,10 +297,8 @@ elif analysis_type == "What-If Analysis":
         shear_plot.axhline(y=0, color='k')
         shear_plot.axvline(x=0, color='k')
         shear_plot.axvline(x=beam_length, color='k')
-        
-        
+       
         shear_plot.grid(True, which='both')
-
 
         bm_plot.plot(x_lst, bm_vals, 'g')
         #bm_plot.set_xlabel('x')
@@ -312,6 +310,15 @@ elif analysis_type == "What-If Analysis":
         bm_plot.axvline(x=0, color='k')
         bm_plot.axvline(x=beam_length, color='k')
         bm_plot.grid(True, which='both')
+
+        deflection_plot.plot(x_lst, defl_val)
+        deflection_plot.set_xlabel('x')
+        deflection_plot.set_ylabel('Deflection (m)')
+        deflection_plot.set_title("Deflection Plot")
+        deflection_plot.axhline(y=0, color='k')
+        deflection_plot.axvline(x=0, color='k')
+        deflection_plot.grid(True, which='both')
+        
 
         plt.subplots_adjust(bottom=0.1,  
                     top=0.9, 
@@ -368,7 +375,7 @@ elif analysis_type == "What-If Analysis":
         "Bending Moment Equation:"
         bm_eqn
         "Deflection Equation"
-        #defl_eqn
+        defl_eqn = deflection_equations(support_effect_beam, "Proped Cantilever "+"Beam")
 
 
         support_effect_fig, (shear_plot, bm_plot, deflection_plot) = plt.subplots(3, 1)
@@ -385,7 +392,7 @@ elif analysis_type == "What-If Analysis":
         for i in x_lst:
             shear_vals.append(float(shear_eqn.subs(x, i)))
             bm_vals.append(float(bm_eqn.subs(x, i)))
-            #defl_val.append(float(defl_eqn.subs(x, i)))
+            defl_val.append(float(defl_eqn.subs(x, i)))
         
         shear_plot.plot(x_lst, shear_vals, 'b')
         
@@ -414,6 +421,15 @@ elif analysis_type == "What-If Analysis":
         bm_plot.axvline(x=0, color='k')
         bm_plot.axvline(x=beam_length, color='k')
         bm_plot.grid(True, which='both')
+
+        deflection_plot.plot(x_lst, defl_val)
+        deflection_plot.set_xlabel('x')
+        deflection_plot.set_ylabel('Deflection (m)')
+        deflection_plot.set_title("Deflection Plot")
+        deflection_plot.axhline(y=0, color='k')
+        deflection_plot.axvline(x=0, color='k')
+        deflection_plot.grid(True, which='both')
+        
 
         plt.subplots_adjust(bottom=0.1,  
                     top=0.9, 
@@ -500,7 +516,7 @@ elif analysis_type == "What-If Analysis":
         "Bending Moment Equation:"
         bm_eqn
         "Deflection Equation"
-        #defl_eqn
+        defl_eqn = deflection_equations(reference_loading_beam, loading_effect_beam_type)
 
 
         support_effect_fig, (shear_plot, bm_plot, deflection_plot) = plt.subplots(3, 1)
@@ -517,7 +533,7 @@ elif analysis_type == "What-If Analysis":
         for i in x_lst:
             shear_vals.append(float(shear_eqn.subs(x, i)))
             bm_vals.append(float(bm_eqn.subs(x, i)))
-            #defl_val.append(float(defl_eqn.subs(x, i)))
+            defl_val.append(float(defl_eqn.subs(x, i)))
         
         shear_plot.plot(x_lst, shear_vals, 'b')
         
@@ -546,6 +562,14 @@ elif analysis_type == "What-If Analysis":
         bm_plot.axvline(x=0, color='k')
         bm_plot.axvline(x=beam_length, color='k')
         bm_plot.grid(True, which='both')
+
+        deflection_plot.plot(x_lst, defl_val)
+        deflection_plot.set_xlabel('x')
+        deflection_plot.set_ylabel('Deflection (m)')
+        deflection_plot.set_title("Deflection Plot")
+        deflection_plot.axhline(y=0, color='k')
+        deflection_plot.axvline(x=0, color='k')
+        deflection_plot.grid(True, which='both')
 
         plt.subplots_adjust(bottom=0.1,  
                     top=0.9, 
@@ -598,7 +622,7 @@ elif analysis_type == "What-If Analysis":
         "Bending Moment Equation:"
         bm_eqn
         "Deflection Equation"
-        #defl_eqn
+        defl_eqn = deflection_equations(interactive_loading_beam, loading_effect_beam_type)
 
 
         loading_effect_fig, (shear_plot, bm_plot, deflection_plot) = plt.subplots(3, 1)
@@ -615,7 +639,7 @@ elif analysis_type == "What-If Analysis":
         for i in x_lst:
             shear_vals.append(float(shear_eqn.subs(x, i)))
             bm_vals.append(float(bm_eqn.subs(x, i)))
-            #defl_val.append(float(defl_eqn.subs(x, i)))
+            defl_val.append(float(defl_eqn.subs(x, i)))
         
         shear_plot.plot(x_lst, shear_vals, 'b')
         
@@ -644,6 +668,14 @@ elif analysis_type == "What-If Analysis":
         bm_plot.axvline(x=0, color='k')
         bm_plot.axvline(x=beam_length, color='k')
         bm_plot.grid(True, which='both')
+
+        deflection_plot.plot(x_lst, defl_val)
+        deflection_plot.set_xlabel('x')
+        deflection_plot.set_ylabel('Deflection (m)')
+        deflection_plot.set_title("Deflection Plot")
+        deflection_plot.axhline(y=0, color='k')
+        deflection_plot.axvline(x=0, color='k')
+        deflection_plot.grid(True, which='both')
 
         plt.subplots_adjust(bottom=0.1,  
                     top=0.9, 
