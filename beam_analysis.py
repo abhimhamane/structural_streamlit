@@ -280,14 +280,13 @@ def beam_viz(beam_inst, beam_type, rxn_symbs):
 
 ##########
 
-def deflection_equations(beam_inst):
+def deflection_equations(beam_inst, beam_type):
     x = sympy.symbols("x")
     C1 = sympy.symbols("C1")
     C2 = sympy.symbols("C2")
 
     c1_val = None
-    c2_val = None
-
+    
     moment_eqn = beam_inst.bending_moment()
 
     # integration of moment equation to obtain slope and deflection equation
@@ -297,11 +296,15 @@ def deflection_equations(beam_inst):
     if integrated_defl.subs(x, 0.0) == C2:
         _bc_applied = integrated_defl.subs(x, beam_inst.length)
         _bc_applied = _bc_applied.subs(C2, 0.0)
+        if beam_type == "Cantilever Beam":
+            integrated_defl = integrated_defl.subs(C1, 0.0)
+            integrated_defl = integrated_defl.subs(C2, 0.0)
 
-        c1_val = sympy.solvers.solve(_bc_applied, C1)[0]
+        else:    
+            c1_val = sympy.solvers.solve(_bc_applied, C1)[0]
 
-        integrated_defl = integrated_defl.subs(C1, c1_val)
-        integrated_defl = integrated_defl.subs(C2, 0.0)
+            integrated_defl = integrated_defl.subs(C1, c1_val)
+            integrated_defl = integrated_defl.subs(C2, 0.0)
 
 
 
