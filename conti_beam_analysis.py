@@ -12,6 +12,11 @@ from numpy import linspace, around
 from PIL import Image
 
 
+def generate_list(num_spans):
+    _lst = []
+    for i in range(num_spans):
+        _lst.append('None')
+
 def equally_spaced_sprts(length, num_spans):
     
     return linspace(0, length, num_spans + 1)

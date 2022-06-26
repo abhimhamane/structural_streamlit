@@ -51,7 +51,7 @@ if type_of_spans == "Equal":
     
     #print(_equally_spaced_sprt_loc)
     _span_options = create_span_list(num_spans)
-    _span_choice = further_params.radio("choose span no:", options= _span_options, horizontal=True)
+    #_span_choice = further_params.radio("choose span no:", options= _span_options, horizontal=True)
 
     #-- Initialization of beam
 
@@ -66,13 +66,15 @@ if type_of_spans == "Equal":
     #---Read More @ https://docs.streamlit.io/library/api-reference/session-state
     #---Handy tutorial @ https://www.youtube.com/watch?v=5l9COMQ3acc
     if 'pt_load_matrix' not in st.session_state:
-        st.session_state.pt_load_matrix = [None, None, None, None]
+        st.session_state.pt_load_matrix = generate_list(num_spans)
 
     if 'udl_matrix' not in st.session_state:
-        st.session_state.udl_matrix = [None, None, None, None]
+        st.session_state.udl_matrix = generate_list(num_spans)
+
 
     if 'moment_matrix' not in st.session_state:
-        st.session_state.moment_matrix = [None, None, None, None]
+        st.session_state.moment_matrix = generate_list(num_spans)
+
     
     pt_load_container = st.session_state.pt_load_matrix
     udl_container = st.session_state.udl_matrix
@@ -80,9 +82,8 @@ if type_of_spans == "Equal":
     
     # point_load_form
     pt_load_inp_form = pt_load_frm.form("simple_loadings_form_pt")
-    pt_load_inp_form.write(_span_choice)
-    _span_id = int(_span_choice[5])
-    
+
+    _span_choice = pt_load_inp_form.select("Choose the Span:", options= _span_options)
     point_load = pt_load_inp_form.slider("Point Magnitude (kN)", 0.0, 25.0, 10.0, step=1.0)
     point_load_loc = pt_load_inp_form.slider("Point Load Location (m)", float(_equally_spaced_sprt_loc[_span_id-1]), float(_equally_spaced_sprt_loc[_span_id]), float(_equally_spaced_sprt_loc[_span_id]+_equally_spaced_sprt_loc[_span_id-1])/2, step=0.1)  
     pt_load_inp_form.form_submit_button("Apply Point Load")
