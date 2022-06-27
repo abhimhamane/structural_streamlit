@@ -139,11 +139,7 @@ def apply_point_loads(cont_beam, pt_load_container: list):
 
 def apply_udl_loads(cont_beam, udl_container, num_spans):
     _cnt = len(udl_container)
-    for i in range(len(udl_container)):
-        if _cnt != num_spans:
-            udl_container = udl_container[:-1]
     for _udl in udl_container:
-        _cnt += 1
         if _udl != None:
             if _udl[0] > 0.0:
                 cont_beam.apply_load(_udl[0], _udl[1], 0, end=_udl[2])
