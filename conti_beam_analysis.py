@@ -137,11 +137,18 @@ def apply_point_loads(cont_beam, pt_load_container: list):
             if pt_load_container[i][0] > 0.0:
                 cont_beam.apply_load(float(pt_load_container[i][0]), float(pt_load_container[i][1]), -1)
 
-def apply_udl_loads(cont_beam, udl_container):
+def apply_udl_loads(cont_beam, udl_container, num_spans):
+    _cnt = len(udl_container)
+    for i in range(len(udl_container)):
+        if _cnt != num_spans:
+            udl_container = udl_container[:-1]
     for _udl in udl_container:
+        _cnt += 1
         if _udl != None:
             if _udl[0] > 0.0:
                 cont_beam.apply_load(_udl[0], _udl[1], 0, end=_udl[2])
+    
+    
 
 def apply_moment_loads(cont_beam, moment_container):
     for mmt in moment_container:
@@ -186,8 +193,17 @@ def solve_rxn_loads(cont_beam, rxn_symb_list):
 
     return _cleaned_results
 
-def continous_beam_slope_equation(cont_beam):
+def continous_beam_deflection(cont_beam, beam_type):
+    x = symbols("x")
+
     raise NotImplementedError
 
 def provide_bc(cont_beam):
     raise NotImplementedError
+
+
+
+
+
+
+

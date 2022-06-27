@@ -1,5 +1,6 @@
 from ossaudiodev import control_labels
 
+
 from requests import options
 import streamlit as st
 
@@ -51,7 +52,7 @@ if type_of_spans == "Equal":
     
     #print(_equally_spaced_sprt_loc)
     _span_options = create_span_list(num_spans)
-    _span_choice = further_params.radio("choose span no:", options= _span_options, horizontal=True)
+    #_span_choice = further_params.radio("choose span no:", options= _span_options, horizontal=True)
     
     #-- Initialization of beam
 
@@ -60,62 +61,67 @@ if type_of_spans == "Equal":
     #----initializing a session state variable to save the user input
     #---Read More @ https://docs.streamlit.io/library/api-reference/session-state
     #---Handy tutorial @ https://www.youtube.com/watch?v=5l9COMQ3acc
+    
     if 'pt_load_matrix' not in st.session_state:
-        st.session_state.pt_load_matrix = [None, None, None, None]
+        st.session_state.pt_load_matrix = generate_list(num_spans)
 
     if 'udl_matrix' not in st.session_state:
-        st.session_state.udl_matrix = [None, None, None, None]
+        st.session_state.udl_matrix = generate_list(num_spans)
 
 
     if 'moment_matrix' not in st.session_state:
-        st.session_state.moment_matrix = [None, None, None, None]
+        st.session_state.moment_matrix = generate_list(num_spans)
 
         
     # point_load_form
     pt_load_inp_form = pt_load_frm.form("simple_loadings_form_pt")
-    pt_load_inp_form.write(_span_choice)
-    _span_id = int(_span_choice[5])
-    point_load = pt_load_inp_form.slider("Point Magnitude (kN)", 0.0, 25.0, 10.0, step=1.0)
-    point_load_loc = pt_load_inp_form.slider("Point Load Location (m)", float(_equally_spaced_sprt_loc[_span_id-1]), float(_equally_spaced_sprt_loc[_span_id]), float(_equally_spaced_sprt_loc[_span_id]+_equally_spaced_sprt_loc[_span_id-1])/2, step=0.1)  
+    _span_choice_pt = pt_load_inp_form.radio("choose span no:", options= _span_options, horizontal=True)
+    
+    _span_id_pt = int(_span_choice_pt[5])
+    point_load = pt_load_inp_form.slider("Point Magnitude (kN)", 0.0, 25.0, 0.0, step=1.0)
+    point_load_loc = pt_load_inp_form.slider("Point Load Location (m)", 0.0, total_length, total_length/2.0, step=0.1)  
     pt_load_inp_form.form_submit_button("Apply Point Load")
 
     #----- Saving Load
-    print(_span_choice, _span_id)
+    
     st.session_state.pt_load_matrix
-    st.session_state.pt_load_matrix[_span_id-1] = [point_load, point_load_loc]
+    st.session_state.pt_load_matrix[_span_id_pt-1] = [point_load, point_load_loc]
     
     
     ##### UDL Form #########
     udl_load_inp_form = udl_frm.form("simple_loadings_form_udl")
-    udl_load_inp_form.write(_span_choice)
-    _span_id = int(_span_choice[5])
-    udl_load = udl_load_inp_form.slider("UDL Magnitude (kN/m)", 0.0, 20.0, 10.0, step=1.0)
+    _span_choice_udl = udl_load_inp_form.radio("choose span no:", options= _span_options, horizontal=True)
+    
+    
+    _span_id_udl = int(_span_choice_udl[5])
+    udl_load = udl_load_inp_form.slider("UDL Magnitude (kN/m)", 0.0, 20.0, 0.0, step=1.0)
 
     
-    lat = list(np.around(np.linspace(float(_equally_spaced_sprt_loc[_span_id-1]), float(_equally_spaced_sprt_loc[_span_id]), 5),decimals = 2))
+    lat = list(np.around(np.linspace(0.0, total_length, int(total_length)+1),decimals = 2))
     udl_strt_loc, udl_end_loc = udl_load_inp_form.select_slider("label", options=lat, value=(lat[0], lat[-1]))
     
-    ## start and end location is a string - later convert it to float in order to use
+    ## start and end location is a string - later converti it to float in order to use
     udl_load_inp_form.form_submit_button("Apply UDL")
 
     #----- Saving Load
-    st.session_state.udl_matrix[_span_id-1] = [udl_load, float(udl_strt_loc), float(udl_end_loc)]
+    st.session_state.udl_matrix[_span_id_udl-1] = [udl_load, float(udl_strt_loc), float(udl_end_loc)]
 
     ##### Moment Load Form ########
     moment_load_inp_form = mmt_frm.form("simple_loadings_form_moment")
-    moment_load_inp_form.write(_span_choice)
-    _span_id = int(_span_choice[5])
+    _span_choice_mmt = moment_load_inp_form.radio("choose span no:", options= _span_options, horizontal=True)
+    
+    _span_id_mmt = int(_span_choice_mmt[5])
     moment_load = moment_load_inp_form.slider("Moment Magnitude (kN-m)", -20.0, 20.0, 0.0, step=1.0)
-    moment_load_loc = moment_load_inp_form.slider("Moment Load Location (m)", float(_equally_spaced_sprt_loc[_span_id-1]), float(_equally_spaced_sprt_loc[_span_id]), float(_equally_spaced_sprt_loc[_span_id]+_equally_spaced_sprt_loc[_span_id-1])/2, step=0.1)
+    moment_load_loc = moment_load_inp_form.slider("Moment Load Location (m)", 0.0, total_length, total_length/2.0 , step=0.1)
     moment_load_inp_form.form_submit_button("Apply Moment Load")
 
-    st.session_state.moment_matrix[_span_id-1] = [moment_load, float(moment_load_loc)]
+    st.session_state.moment_matrix[_span_id_mmt-1] = [moment_load, float(moment_load_loc)]
     
     
     # Initailization of beam
     cont_beam, viz_beam = create_contnious_beam(total_length, sprt_cond, _equally_spaced_sprt_loc,E, I)
     apply_point_loads(viz_beam, st.session_state.pt_load_matrix)
-    apply_udl_loads(viz_beam, st.session_state.udl_matrix)
+    apply_udl_loads(viz_beam, st.session_state.udl_matrix ,num_spans)
     apply_moment_loads(viz_beam, st.session_state.moment_matrix)
     
        
@@ -135,7 +141,7 @@ if type_of_spans == "Equal":
     apply_interm_sprt_rxn_loads(cont_beam, rxn_symbs, _equally_spaced_sprt_loc)
 
     apply_point_loads(cont_beam, st.session_state.pt_load_matrix)
-    apply_udl_loads(cont_beam, st.session_state.udl_matrix)
+    apply_udl_loads(cont_beam, st.session_state.udl_matrix, num_spans)
     apply_moment_loads(cont_beam, st.session_state.moment_matrix)
 
     rxn_loads = solve_rxn_loads(cont_beam, rxn_symbs)
