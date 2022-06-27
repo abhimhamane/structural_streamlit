@@ -118,7 +118,7 @@ if type_of_spans == "Equal":
     
     # Initailization of beam
     cont_beam, viz_beam = create_contnious_beam(total_length, sprt_cond, _equally_spaced_sprt_loc,E, I)
-    cont_beam.elastic_modulus
+    
     apply_point_loads(viz_beam, st.session_state.pt_load_matrix)
     apply_udl_loads(viz_beam, st.session_state.udl_matrix ,num_spans)
     apply_moment_loads(viz_beam, st.session_state.moment_matrix)
@@ -203,6 +203,7 @@ if type_of_spans == "Equal":
     deflection_plot.set_title("Deflection Plot")
     deflection_plot.axhline(y=0, color='k')
     deflection_plot.axvline(x=0, color='k')
+    deflection_plot.axvline(x=total_length, color='k')
     deflection_plot.grid(True, which='both')
     
 
