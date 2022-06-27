@@ -30,10 +30,8 @@ cont_beam_analysis_params.form_submit_button("Apply Changes")
 
 st.title("Continuous Beam Analysis")
 further_params = st.container()
-if num_spans <= 2:
-    sprt_cond = further_params.radio("Choose End Support Conditions:", options=['Fix-Fix', 'Fix-Pin', 'Fix-Free', 'Pin-Pin', 'Pin-Free'], horizontal=True)
-elif num_spans > 2:
-    sprt_cond = further_params.radio("Choose End Support Conditions:", options=['Fix-Fix', 'Fix-Pin', 'Fix-Free', 'Pin-Pin', 'Pin-Free', 'Free-free'], horizontal=True)
+
+sprt_cond = further_params.radio("Choose End Support Conditions:", options=['Fix-Fix', 'Fix-Pin', 'Fix-Free', 'Pin-Pin', 'Pin-Free'], horizontal=True)
 
 # initialization of continuous beam
 cont_beam = Beam(total_length, E, I)
@@ -84,7 +82,7 @@ if type_of_spans == "Equal":
 
     #----- Saving Load
     
-    st.session_state.pt_load_matrix
+    
     st.session_state.pt_load_matrix[_span_id_pt-1] = [point_load, point_load_loc]
     
     
@@ -97,7 +95,7 @@ if type_of_spans == "Equal":
     udl_load = udl_load_inp_form.slider("UDL Magnitude (kN/m)", 0.0, 20.0, 0.0, step=1.0)
 
     
-    lat = list(np.around(np.linspace(0.0, total_length, int(total_length)+1),decimals = 2))
+    lat = list(np.around(np.linspace(0.0, total_length, int(total_length*2)+1),decimals = 2))
     udl_strt_loc, udl_end_loc = udl_load_inp_form.select_slider("label", options=lat, value=(lat[0], lat[-1]))
     
     ## start and end location is a string - later converti it to float in order to use
@@ -151,6 +149,7 @@ if type_of_spans == "Equal":
     bm_eqn = cont_beam.bending_moment()
     #slp_eqn = cont_beam.slope()
     #defl_eqn = cont_beam.deflection()
+    defl_eqn = continous_beam_deflection(cont_beam, sprt_cond)
     fig, (shear_plot, bm_plot, deflection_plot) = plt.subplots(3, 1)
     ax_x = np.arange(0, cont_beam.length, 0.01)
     x_lst = []
@@ -165,7 +164,7 @@ if type_of_spans == "Equal":
     for i in x_lst:
         shear_vals.append(float(shear_eqn.subs(x, i)))
         bm_vals.append(float(bm_eqn.subs(x, i)))
-        #defl_val.append(float(slp_eqn.subs(x, i)))
+        defl_val.append(float(defl_eqn.subs(x, i)))
     
     shear_plot.plot(x_lst, shear_vals, 'b')
     
@@ -195,6 +194,16 @@ if type_of_spans == "Equal":
     bm_plot.axvline(x=0, color='k')
     bm_plot.axvline(x=total_length, color='k')
     bm_plot.grid(True, which='both')
+
+
+    deflection_plot.plot(x_lst, defl_val)
+    deflection_plot.set_xlabel('x')
+    deflection_plot.set_ylabel('Deflection (m)')
+    deflection_plot.set_title("Deflection Plot")
+    deflection_plot.axhline(y=0, color='k')
+    deflection_plot.axvline(x=0, color='k')
+    deflection_plot.grid(True, which='both')
+    
 
 
 

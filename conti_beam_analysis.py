@@ -2,7 +2,8 @@ from email import header
 from unicodedata import decimal
 from sympy.physics.continuum_mechanics import Beam
 from sympy import symbols
-
+from sympy import integrate
+from sympy.solvers import solve
 from sympy import SingularityFunction
 
 import matplotlib.pyplot as plt
@@ -189,10 +190,34 @@ def solve_rxn_loads(cont_beam, rxn_symb_list):
 
     return _cleaned_results
 
-def continous_beam_deflection(cont_beam, beam_type):
+def continous_beam_deflection(cont_beam, support_condition):
     x = symbols("x")
+    C1 = symbols("C1")
+    C2 = symbols("C2")
 
-    raise NotImplementedError
+    c1_val = None
+    
+    moment_eqn = cont_beam.bending_moment()
+
+    # integration of moment equation to obtain slope and deflection equation
+    integrated_slp = integrate(moment_eqn, x)/(cont_beam.elastic_modulus*cont_beam.second_moment) + C1
+    integrated_defl = integrate(integrated_slp, x) + C2
+
+    if integrated_defl.subs(x, 0.0) == C2:
+        _bc_applied = integrated_defl.subs(x, cont_beam.length)
+        _bc_applied = _bc_applied.subs(C2, 0.0)
+        if support_condition == "Pin-Pin" or support_condition == "Pin-Free":
+            c1_val = solve(_bc_applied, C1)[0]
+
+            integrated_defl = integrated_defl.subs(C1, c1_val)
+            integrated_defl = integrated_defl.subs(C2, 0.0)
+
+        else:    
+            integrated_defl = integrated_defl.subs(C1, 0.0)
+            integrated_defl = integrated_defl.subs(C2, 0.0)
+
+
+    return integrated_defl
 
 def provide_bc(cont_beam):
     raise NotImplementedError
