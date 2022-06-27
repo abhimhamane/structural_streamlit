@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 from conti_beam_analysis import *
 
 #--------------- E and I standard values----------#
-E = 25000
+E = 25000.0 
 I = 0.0005175
 
 
@@ -118,6 +118,7 @@ if type_of_spans == "Equal":
     
     # Initailization of beam
     cont_beam, viz_beam = create_contnious_beam(total_length, sprt_cond, _equally_spaced_sprt_loc,E, I)
+    cont_beam.elastic_modulus
     apply_point_loads(viz_beam, st.session_state.pt_load_matrix)
     apply_udl_loads(viz_beam, st.session_state.udl_matrix ,num_spans)
     apply_moment_loads(viz_beam, st.session_state.moment_matrix)

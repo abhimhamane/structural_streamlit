@@ -36,6 +36,7 @@ def create_pandas_df():
 
 
 def create_contnious_beam(total_length: float, end_supports: str, support_list: list,_E, _I):
+    _E = _E * (10**6)
     _beam = Beam(total_length, _E, _I)
     _viz_beam = Beam(total_length, _E, _I)
     # apply End support conditions
@@ -200,7 +201,7 @@ def continous_beam_deflection(cont_beam, support_condition):
     moment_eqn = cont_beam.bending_moment()
 
     # integration of moment equation to obtain slope and deflection equation
-    integrated_slp = integrate(moment_eqn, x)/(cont_beam.elastic_modulus*cont_beam.second_moment) + C1
+    integrated_slp = (integrate(moment_eqn, x)/(cont_beam.elastic_modulus*cont_beam.second_moment)) + C1
     integrated_defl = integrate(integrated_slp, x) + C2
 
     if integrated_defl.subs(x, 0.0) == C2:
