@@ -229,26 +229,26 @@ elif type_of_spans == "Unequal":
 
     elif num_spans == 3:
         unequal_spans_31 = st.sidebar.form("Unequal_Spans_Form_31")
-        sprt_loc_31 = unequal_spans_31.slider("Choose Intermediate Support Loc:", 1.0, total_length-2.0, total_length/3.0, step=0.5)
+        sprt_loc_31 = unequal_spans_31.slider("Choose Intermediate Support Loc:", 1.0, total_length-3.0, total_length/3.0, step=0.5)
         unequal_spans_31.form_submit_button("Apply Intermediate Supports 31")
 
         unequal_spans_32 = st.sidebar.form("Unequal_Spans_Form_32")
-        sprt_loc_32 = unequal_spans_32.slider("Choose Intermediate Support Loc:", sprt_loc_31, total_length-1, sprt_loc_31 + ((total_length-1)-sprt_loc_31)/2.0, step=0.5)
+        sprt_loc_32 = unequal_spans_32.slider("Choose Intermediate Support Loc:", sprt_loc_31+1.0, total_length-1, sprt_loc_31 + ((total_length-1)-sprt_loc_31)/2.0, step=0.5)
         unequal_spans_32.form_submit_button("Apply Intermediate Supports 32")
 
         unequal_intermed_sprt_loc = [0, sprt_loc_31, sprt_loc_32, total_length]
 
     elif num_spans == 4:
         unequal_spans_41 = st.sidebar.form("Unequal_Spans_Form_41")
-        sprt_loc_41 = unequal_spans_41.slider("Choose Intermediate Support Loc:", 1.0, total_length-3.0, total_length/3.0, step=0.5)
+        sprt_loc_41 = unequal_spans_41.slider("Choose Intermediate Support Loc:", 1.0, total_length-4.0, total_length/3.0, step=0.5)
         unequal_spans_41.form_submit_button("Apply Intermediate Supports 41")
 
         unequal_spans_42 = st.sidebar.form("Unequal_Spans_Form_42")
-        sprt_loc_42 = unequal_spans_42.slider("Choose Intermediate Support Loc:", sprt_loc_41, total_length-2.0, sprt_loc_41 + ((total_length-1)-sprt_loc_41)/2.0, step=0.5)
+        sprt_loc_42 = unequal_spans_42.slider("Choose Intermediate Support Loc:", sprt_loc_41+1.0, total_length-2.0, sprt_loc_41 + ((total_length-1)-sprt_loc_41)/2.0, step=0.5)
         unequal_spans_42.form_submit_button("Apply Intermediate Supports 42")
 
         unequal_spans_43 = st.sidebar.form("Unequal_Spans_Form_43")
-        sprt_loc_43 = unequal_spans_43.slider("Choose Intermediate Support Loc:", sprt_loc_42, total_length-1.0, sprt_loc_42 + ((total_length-1)-sprt_loc_42)/2.0, step=0.5)
+        sprt_loc_43 = unequal_spans_43.slider("Choose Intermediate Support Loc:", sprt_loc_42+1.0, total_length-1.0, sprt_loc_42 + ((total_length-1)-sprt_loc_42)/2.0, step=0.5)
         unequal_spans_43.form_submit_button("Apply Intermediate Supports 43")
 
         unequal_intermed_sprt_loc = [0, unequal_spans_41, unequal_spans_42, unequal_spans_43, total_length]
